@@ -154,6 +154,26 @@ def yaml_quote(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
+def normalize_title(title: str, categories: list[str]) -> str:
+    normalized = title.strip()
+
+    if "年度总结" in categories and not normalized.startswith("【"):
+        match = re.match(r"^(\d{4}年度总结)(.*)$", normalized)
+        if match:
+            prefix, suffix = match.groups()
+            suffix = suffix.strip()
+
+            if not suffix:
+                return f"【{prefix}】"
+
+            if suffix.startswith("-") or suffix.startswith("—"):
+                return f"【{prefix}】{suffix}"
+
+            return f"【{prefix}】-{suffix}"
+
+    return normalized
+
+
 def build_post(path: Path) -> SourcePost:
     raw = read_text(path)
     folder_categories = relative_categories(path)
@@ -178,7 +198,8 @@ def build_post(path: Path) -> SourcePost:
     commit_date = git_first_commit_date(path)
     date_str = normalize_git_date(commit_date) if commit_date else fallback_now()
     slug = slugify(path.stem)
-    filename = f"{date_str[:10]}-{slug}.md"
+    filename = f"{date_str[:10]}-{path.stem}.md"
+    title = normalize_title(title, folder_categories)
     content = render_front_matter(title, date_str, folder_categories, path, slug) + body.strip() + "\n"
     return SourcePost(path, filename, content)
 
