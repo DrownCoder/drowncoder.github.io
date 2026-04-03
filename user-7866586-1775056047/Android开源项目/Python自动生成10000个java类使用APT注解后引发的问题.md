@@ -1,0 +1,182 @@
+### 前言
+前面写了一篇关于自己开发的一个[基于APT注解的用于RecyclerView复杂楼层的开源框架](https://www.jianshu.com/p/f45e4bcb8d92)，框架的原理比较简单，通过注解，在编译期会生成一个ComponentRule.java的文件，然后建立一个映射关系。使用方式简单介绍一下：
+1.绑定布局文件
+```
+@ComponentType(
+        value = ComponentId.SIMPLE,
+        layout = R.layout.single_text
+)
+public class SimpleVH extends Component<SimpleModel> {
+    private TextView tvList;
+    public SimpleVH(Context context, View itemView) {
+        super(context, itemView);
+        tvList = itemView.findViewById(R.id.tv_simple);
+    }
+
+    @Override
+    public void onBind(int pos, SimpleModel item) {
+        tvList.setText(item.name);
+    }
+}
+```
+2.绑定Model
+```
+@BindType(ComponentId.SIMPLE)
+public class SimpleModel {
+    public String name;
+
+    public SimpleModel(String name) {
+        this.name = name;
+    }
+}
+```
+3.这样在编译的时候就会生成一个ComponentRule.java文件，建立映射关系。文件的内容大概如下：
+```
+public class ComponentRule implements IComponentRule  {
+    public static final SparseArray<ViewInfo> WIDGET_TYPE;
+
+    public static final Map<Class<?>, SparseArray<ViewInfo>> ATTACH_TYPE;
+
+    public static final Map<Class<?>, Integer> MODEL_TYPE;
+
+    static {
+        WIDGET_TYPE = new SparseArray<>();
+        MODEL_TYPE = new HashMap();
+        ATTACH_TYPE = new HashMap<>();
+
+        putWidget(2,new ViewInfo(2,
+                com.study.xuan.emvp.vh.ImageViewHolder.class,2131296309,1, com.study.xuan.emvp.presenter.Contract.ImagePresenter.class));
+        putWidget(8,new ViewInfo(8,
+                com.study.xuan.emvp.vh.ImgVH.class,-1,2,android.widget.ImageView.class, null));
+        ......
+        putModel(com.study.xuan.emvp.model.Text.class,0);
+    }
+}
+```
+### 问题描述
+考虑到目前RecyclerView的使用率，一个大型的项目定义的ViewHolder数量可能达到上千个，考虑到如下几个问题：
+1.项目的编译速度影响
+2.是否会有其他问题
+所以这里希望模拟创建1w个ViewHolder类，使用`@ComponentType`注解，所以用Python写了一个脚本。
+```
+import os
+
+def createViewHolder(content,fileName):
+	path = '/Users/xuan/Projects/EMvp/app/src/main/java/com/study/xuan/emvp/python'
+
+	if not os.path.exists(path):
+		os.makedirs(path)
+
+	name = fileName + '.java'
+	file = open(name,'w');
+	file.write(content)
+
+	file.close()
+
+	print ('ok')
+
+
+contentCode = "package com.study.xuan.emvp.python;\n" \
+"import android.content.Context;\n" \
+"import android.view.View;\n" \
+"import android.widget.TextView;\n" \
+"import com.xuan.annotation.ComponentType;\n" \
+"import com.xuan.eapi.component.Component;\n" \
+"import com.study.xuan.emvp.model.Text;\n" \
+"@ComponentType(\n" \
+"        value = %s,\n" \
+"        view = TextView.class,\n" \
+"        attach = Text.class" \
+")\n" \
+"public class PyThonVH%s extends Component {\n" \
+"    public PyThonVH%s(Context context, View itemView) {\n" \
+"        super(context, itemView);\n" \
+"    }\n" \
+"    @Override\n" \
+"    public void onBind(int pos, Object item) {\n" \
+"    }" \
+"}"
+
+fileName = 'PyThonVH%s'
+
+
+for i in range(1,2000):
+	createViewHolder(contentCode%((100+i),i,i),fileName%i)
+
+```
+代码也很基础，在当前工程的一个目录下，利用for循环，创建Java文件，文件名就是PyThonVH1,PyThonVH2,PyThonVH3,PyThonVH4...,注解就使用最基础的注解，为了方式ComponentId冲突，这里利用了框架本身提供的多人协作的[解决方式](https://github.com/DrownCoder/EMvp/wiki/%E5%A4%9A%E4%BA%BAMIX%E6%A8%A1%E5%BC%8F)，`attach`到一个Model上，然后CompoentId为1，2，3，4...
+
+代码写完了，脚本一运行，成功创建的1w个类
+![类](https://upload-images.jianshu.io/upload_images/7866586-52c8e095b3c84207.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+接下来开始验证问题，当build的时候，编译期报了一个意想不到的异常
+![代码过长异常](https://upload-images.jianshu.io/upload_images/7866586-a60430a4b315e1e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+代码过长，没有看错，还是第一次遇到这样的异常信息，通过Google查询，得知
+>JVM规范里对Class文件的规定里有写到每个方法的字节码最多只能有65535字节
+
+其实原理和我们经常遇到的64K异常一样，只不过这会不是方法数量超过导致的，而是方法体大小导致的。
+所以解决方式其实也是对应的，**拆分**
+```
+if (commonTypeWidget.size() < LINE_LIMIT) {
+            //未超限，不用分割
+            writer.write(writeWidget(0, commonTypeWidget.size()));
+        } else {
+            //分割方法，防止too large code异常
+            double splitNum = Math.ceil(commonTypeWidget.size() / LINE_LIMIT);
+            for (int i = 0; i < splitNum; i++) {
+                int start = (int) (i * LINE_LIMIT);
+                int end;
+                if (i == splitNum - 1) {
+                    end = commonTypeWidget.size();
+                } else {
+                    end = (int) ((i + 1) * LINE_LIMIT);
+                }
+                //保存拆分的方法
+                splitMethods.add(String.format(FileCreator.COMMON_METHOD_T, i, writeWidget(start,
+                        end)));
+                writer.write(String.format(FileCreator.COMMON_METHOD_INVOKE, i));
+            }
+        }
+```
+解决方式的核心代码其实就在上面，对映射表的大小和定义的方法体大小(500)比较，如果超过限制，则进行分割，分别查分到`splitAttachMethodStep%s()`方法内。最后编译的成的文件就变成如下：
+```
+static {
+        WIDGET_TYPE = new SparseArray<>();
+        MODEL_TYPE = new HashMap();
+        ATTACH_TYPE = new HashMap<>();
+
+        ...
+        splitAttachMethodStep0();
+        splitAttachMethodStep1();
+        splitAttachMethodStep2();
+        splitAttachMethodStep3();
+        splitAttachMethodStep4();
+        splitAttachMethodStep5();
+        splitAttachMethodStep6();
+        splitAttachMethodStep7();
+        splitAttachMethodStep8();
+        splitAttachMethodStep9();
+        splitAttachMethodStep10();
+        splitAttachMethodStep11();
+        splitAttachMethodStep12();
+        splitAttachMethodStep13();
+        splitAttachMethodStep14();
+        splitAttachMethodStep15();
+        splitAttachMethodStep16();
+        splitAttachMethodStep17();
+        splitAttachMethodStep18();
+        splitAttachMethodStep19();
+        splitAttachMethodStep20();
+        putModel(com.study.xuan.emvp.activity.product.Product.class,0);
+        putModel(com.study.xuan.emvp.activity.common.SimpleModel.class,9);
+        putModel(com.study.xuan.emvp.model.Text.class,0);
+    }
+```
+当1w个类的时候，编译的速度影响也不是特别的大，最终的编译时间大是20s左右
+![速度](https://upload-images.jianshu.io/upload_images/7866586-b54bcd9adc486524.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+### 总结
+本篇博客主要讲解了自己写的开源框架时遇到的一个比较有意思的问题，当然这个问题对于一个稳定的框架是必须要考虑的。这里再放上框架源码地址吧，框架支持组件化工程，适合RecyclerView简单或者复杂的楼层样式开发模式，支持多人多页面楼层打通，具有很多的拓展API，欢迎大家提issue讨论～
+
+>项目地址：[EMvp](https://github.com/DrownCoder/EMvp)
+>欢迎Star👏
+>欢迎大家提issues提意见～

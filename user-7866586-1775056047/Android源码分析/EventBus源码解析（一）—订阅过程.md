@@ -1,0 +1,480 @@
+>1.[EventBus源码解析（一）—订阅过程](https://www.jianshu.com/p/2e0182991ac9)
+>2.[EventBus源码解析（二）—发布事件和注销流程](https://www.jianshu.com/p/ebec755ce098)
+>3.[EventBus源码解析（三）—进阶源码](https://www.jianshu.com/p/ca36147d910a)
+
+## 前言
+最近发现EventBus用起来是真的方便，本来对于EventBus我对于这个框架的源码的阅读的优先级是比较低的，因为这个框架不像OkHttp，Glide那样层层嵌套，步步深入，基本上有一定基础的人对于EventBus的原理都会有一定的理解——**反射**。但是最近突然发现仅仅是了解这些是不够的，如果细想一下会发现，EventBus的实现还是有许多值得学习的地方的，我来说一下让我疑惑的问题以至于想让我去追究EventBus底层源码的问题吧。
+>1.EventBus在接受事件的时候如何区分多个相同的Activity？
+>2.EventBus事件的接收在父类和子类之间是什么规则？
+>3.EventBus对于多态类型的事件是如何识别的？
+>4.EventBus只能用于Activity和Fragment之间吗？
+>5.EventBus可以创建多个实例吗？互相干扰吗？
+
+再没有看EventBus源码之前，上面这些问题，我是没法回答的。意识到看源码的必要性，我提高的EventBus源码阅读的优先级，本篇博客主要从分析注册流程。
+## 源码分析
+### 注册流程
+```
+EventBus.getDefault().register(this);
+```
+EventBus的使用本篇博客就不讲解了，注册的代码很简单，一行遍完成，接下来详细看看实现源码。
+
+#### 1.getDefault()
+
+```
+public static EventBus getDefault() {
+        //常规的双重锁单例模式，特殊的是构造方法是公有的，也就是可以创建多个EventBus,互相不干扰
+        EventBus instance = defaultInstance;
+        if (instance == null) {
+            synchronized (EventBus.class) {
+                instance = EventBus.defaultInstance;
+                if (instance == null) {
+                    instance = EventBus.defaultInstance = new EventBus();
+                }
+            }
+        }
+        return instance;
+    }
+```
+对于getDefault()不出意料果然是常规的双重锁的单例模式，但是这里有一个地方和平常的单例模式不同，平常的单例模式构造方法往往是私有的，用于保证全局唯一，但是这里我们看一下EventBus的构造函数。
+```
+/**
+     * Creates a new EventBus instance; each instance is a separate scope in which events are delivered. To use a
+     * central bus, consider {@link #getDefault()}.
+     */
+    public EventBus() {
+        this(DEFAULT_BUILDER);
+    }
+```
+这里会发现EventBus的构造方法是公有的，也就是说我们自己可以自己new一个EventBus的实例，当然EventBus也提供了EventBusBuilder供我们构造使用。这里特意把构造方法的注释放了上来，大概翻译一下吧。
+>创建一个EventBus实例，每一个实例的事件传递都在自己的实例范围，如果想统一管理，可以使用getDefault()方法。
+这里通过注释我们就可以解释第五个问题了，当然只是从注释层面，**EventBus是可以创建多个实例的，并且多个实例的发送的事件是互不干扰的**
+
+#### 2.register(Object subscriber)
+
+```
+public void register(Object subscriber) {
+        //获得订阅者对应的Class,MainActivity.class
+        Class<?> subscriberClass = subscriber.getClass();
+        //找到所有的订阅的方法
+        List<SubscriberMethod> subscriberMethods = subscriberMethodFinder.findSubscriberMethods(subscriberClass);
+        synchronized (this) {
+            for (SubscriberMethod subscriberMethod : subscriberMethods) {
+                subscribe(subscriber, subscriberMethod);
+            }
+        }
+    }
+```
+这里开始看注册的过程，可以看到往往我们注册时传入的是```this```,所以这里首先调用getClass(),获得的就是MainActivity.class（举例），获得完这个class对象后，会调用```findSubscriberMethods```方法来找到该Class中所有的订阅方法。
+```
+List<SubscriberMethod> findSubscriberMethods(Class<?> subscriberClass) {
+        //Cache中存在则直接从Cache中获取
+        List<SubscriberMethod> subscriberMethods = METHOD_CACHE.get(subscriberClass);
+        if (subscriberMethods != null) {
+            return subscriberMethods;
+        }
+
+        if (ignoreGeneratedIndex) {
+            //运行是通过反射拿到
+            subscriberMethods = findUsingReflection(subscriberClass);
+        } else {
+            //编译期获得
+            subscriberMethods = findUsingInfo(subscriberClass);
+        }
+        if (subscriberMethods.isEmpty()) {
+            throw new EventBusException("Subscriber " + subscriberClass
+                    + " and its super classes have no public methods with the @Subscribe annotation");
+        } else {
+            //放入缓存
+            METHOD_CACHE.put(subscriberClass, subscriberMethods);
+            return subscriberMethods;
+        }
+    }
+```
+这里首先从缓存中获取。METHOD_CACHE对应的是在声明的时候就初始化完成了,是一个ConcurrentHashMap
+```
+private static final Map<Class<?>, List<SubscriberMethod>> METHOD_CACHE = new ConcurrentHashMap<>();
+```
+可以看到这里的key是class对象，那么我们可以发现，如果已经通过反射得到的订阅方法的类，再次注册的时候，不会再次通过反射获取。
+下面可以看到对于`ignoreGeneratedIndex `变量的判断，这个变量默认是false，也就是默认的时候我们是通过编译期注解来实现映射表的构建的，本篇博客主要分析通过运行时反射来回去订阅的方法的，对于索引的方式，后面的博客如果有时间会考虑分析源码。
+```
+private List<SubscriberMethod> findUsingReflection(Class<?> subscriberClass) {
+        //缓存中获取，默认大小为4都数组，没有就new
+        FindState findState = prepareFindState();
+        findState.initForSubscriber(subscriberClass);
+        while (findState.clazz != null) {
+            //findState保存注册的订阅者中的方法相关信息
+            findUsingReflectionInSingleClass(findState);
+            //向上继续遍历
+            findState.moveToSuperclass();
+        }
+        //返回方法集
+        return getMethodsAndRelease(findState);
+    }
+```
+这里可以看到首先获取FindState对象，使用了`prepareFindState`方法
+```
+private static final int POOL_SIZE = 4;
+private static final FindState[] FIND_STATE_POOL = new FindState[POOL_SIZE];
+private FindState prepareFindState() {
+        //有点简单粗暴的意思。。。
+        synchronized (FIND_STATE_POOL) {
+            for (int i = 0; i < POOL_SIZE; i++) {
+                FindState state = FIND_STATE_POOL[i];
+                if (state != null) {
+                    FIND_STATE_POOL[i] = null;
+                    return state;
+                }
+            }
+        }
+        return new FindState();
+    }
+```
+可以看到默认是有一个大小为4的数组用于缓存FindState对象的，由于FindState对象比较大，所以EventBus考虑使用缓存进行复用，当然这个缓存实现起来也比较简单粗暴～
+接下来是一个循环。
+```
+while (findState.clazz != null) {
+            //findState保存注册的订阅者中的方法相关信息
+            findUsingReflectionInSingleClass(findState);
+            //向上继续遍历
+            findState.moveToSuperclass();
+        }
+```
+可以看到，此时我们的findState.clazz是MainActivity.class(举例)，我们这里先看一下遍历的规则，再来看遍历里干了些什么，首先这里的判断依据是根据`findState.clazz!=null`.每次执行完`findUsingReflectionInSingleClass(findState);`方法都会执行`findState.moveToSuperclass `方法。
+```
+void moveToSuperclass() {
+            //如果配置忽略父类方法则不检查父类方法
+            if (skipSuperClasses) {
+                clazz = null;
+            } else {
+                clazz = clazz.getSuperclass();
+                String clazzName = clazz.getName();
+                /** Skip system classes, this just degrades performance. */
+                if (clazzName.startsWith("java.") || clazzName.startsWith("javax.") || clazzName.startsWith("android.")) {
+                    clazz = null;
+                }
+            }
+        }
+```
+这里可以看到，方法的作用就是向上遍历父Class，可以通过配置不向上遍历父Class,但是默认是会先检查父Class，而且这里需要注意的一个点，向上遍历的终点是检查到Class是以“java.”"javax.""android."开头的，也就是说对于系统源码内的class是不会检查的，这时class变成null，整个循环也就结束了。所以这里又可以解释我们的一个疑惑，默认EventBus是会检查父类中的订阅方法的。
+
+```
+
+private void findUsingReflectionInSingleClass(FindState findState) {
+        Method[] methods;
+        try {
+            // This is faster than getMethods, especially when subscribers are fat classes like Activities
+            //通过注释其实也可以看到EventBus团队对于反射性能都考虑，所以用getDeclaredMethods而不是getMethods
+            //获取都不包括父类和接口都方法，包括私有都，
+            //疑问点1
+            methods = findState.clazz.getDeclaredMethods();
+        } catch (Throwable th) {
+            // Workaround for java.lang.NoClassDefFoundError, see https://github.com/greenrobot/EventBus/issues/149
+            methods = findState.clazz.getMethods();
+            findState.skipSuperClasses = true;
+        }
+        for (Method method : methods) {
+            int modifiers = method.getModifiers();
+            //方法必须是Public，不能是static,abstract，生成索引时会出问题
+            if ((modifiers & Modifier.PUBLIC) != 0 && (modifiers & MODIFIERS_IGNORE) == 0) {
+                //获取方法都参数
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                //参数个数=1
+                if (parameterTypes.length == 1) {
+                    //方法是用@Subscribe注解
+                    Subscribe subscribeAnnotation = method.getAnnotation(Subscribe.class);
+                    if (subscribeAnnotation != null) {
+                        //获取第一个参数都Class,也就是事件类都class
+                        Class<?> eventType = parameterTypes[0];
+                        // 检查eventType决定是否订阅，通常订阅者不能有多个eventType相同的订阅方法
+                        //疑问点2
+                        if (findState.checkAdd(method, eventType)) {
+                            //获得Thread类型
+                            ThreadMode threadMode = subscribeAnnotation.threadMode();
+                            //ArrayList加入一个SubscriberMethod对象
+                            findState.subscriberMethods.add(new SubscriberMethod(method, eventType, threadMode,
+                                    subscribeAnnotation.priority(), subscribeAnnotation.sticky()));
+                        }
+                    }
+                } else if (strictMethodVerification && method.isAnnotationPresent(Subscribe.class)) {
+                    String methodName = method.getDeclaringClass().getName() + "." + method.getName();
+                    throw new EventBusException("@Subscribe method " + methodName +
+                            "must have exactly 1 parameter but has " + parameterTypes.length);
+                }
+            } else if (strictMethodVerification && method.isAnnotationPresent(Subscribe.class)) {
+                String methodName = method.getDeclaringClass().getName() + "." + method.getName();
+                throw new EventBusException(methodName +
+                        " is a illegal @Subscribe method: must be public, non-static, and non-abstract");
+            }
+        }
+    }
+```
+
+接下来看到这个获得订阅的方法。这里注释写的都比较全了这里有几个疑问点是需要我们了解的：
+### 疑问点1
+可以看到这里使用了getDeclaredMethods而没有使用getMethods，这里通过注释我们可以看到，这里EventBus团队出于对于反射性能的考虑，使用`getDeclaredMethods `代替`getMethods `方法，这里可能有疑问了，这样使用为什么能提高性能？
+首先我们来大概解释一下两个方法的区别吧：
+>public Method[] getMethods()返回某个类的所有公用（public）方法包括其继承类的公用方法，当然也包括它所实现接口的方法。
+>public Method[] getDeclaredMethods()对象表示的类或接口声明的所有方法，包括公共、保护、默认（包）访问和私有方法，但不包括继承的方
+>法。当然也包括它所实现接口的方法。
+
+起初我也在疑惑为什么这样能够提升性能，直达看到了一篇[博客](https://blog.csdn.net/bigerbigerwolf/article/details/79787245)，这篇博客也是对EventBus的源码的讲解，中间提到了的关于这里性能提升的讲解，这里也是EventBus在完善一个[issue](https://github.com/greenrobot/EventBus/issues/149)的解决方案。这里大概解释一下：
+可以看到这两个方法比较显著的区别是，`getDeclaredMethods `只会获取当前类的所有方法，而`getMethods `会获取所有公用方法，包括继承的。而前面也提到，EventBus在查找完这里后，会调用`findState.moveToSuperclass()`，向上继续查询父类的方法，所以这里使用`getMethods `会重复查询父类的方法。
+
+### 疑问点2
+`findState.checkAdd(method, eventType)`这层检查是什么作用的？
+这里提出两个特殊场景（一般应该也不会有人这样写吧）：
+>1.一个类中存在两个方法名不同，但是是同一个Event类型的订阅方法，EventBus会怎样处理？
+>2.子类和父类存在相同方法名和Event类型的订阅方法，EventBus会怎样处理？
+
+这个方法的作用就是处理上面这两种情况的，所以还是需要我们追究一下这里的源码实现：
+
+```
+boolean checkAdd(Method method, Class<?> eventType) {
+            // 2 level check: 1st level with event type only (fast), 2nd level with complete signature when required.
+            // Usually a subscriber doesn't have methods listening to the same event type.
+            //HashMap,一般一个Event只有一个方法
+            Object existing = anyMethodByEventType.put(eventType, method);
+            if (existing == null) {
+            		//不存在该参数类型的方法，直接添加到订阅者
+                return true;
+            } else {
+                if (existing instanceof Method) {
+                    //存在相同的参数类型，代表参数类型相同，但可能方法名不同，或者方法名也相同(父类中的被重写的方法)
+                    if (!checkAddWithMethodSignature((Method) existing, eventType)) {
+                        // Paranoia check
+                        throw new IllegalStateException();
+                    }
+                    // Put any non-Method object to "consume" the existing Method
+                    anyMethodByEventType.put(eventType, this);
+                }
+                return checkAddWithMethodSignature(method, eventType);
+            }
+        }
+```
+这里可以看到`anyMethodByEventType`是一个HashMap,如果当前Event的类型是原来没有过的，直接返回true，加入到`anyMethodByEventType`中。而当这个参数类型已经被加入过了，存在两种情况，也就是刚才已经提到的两种情况，**代表参数类型相同，但可能方法名不同，或者方法名也相同(父类中的被重写的方法)**，这时就要进行`checkAddWithMethodSignature `方法的检查。
+
+```
+private boolean checkAddWithMethodSignature(Method method, Class<?> eventType) {
+            methodKeyBuilder.setLength(0);
+            methodKeyBuilder.append(method.getName());
+            methodKeyBuilder.append('>').append(eventType.getName());
+
+            String methodKey = methodKeyBuilder.toString();
+            Class<?> methodClass = method.getDeclaringClass();
+            Class<?> methodClassOld = subscriberClassByMethodKey.put(methodKey, methodClass);
+            if (methodClassOld == null || methodClassOld.isAssignableFrom(methodClass)) {
+            //methodClassOld = null，说明时方法名不同的情况，直接返回true，会加入订阅。
+                //返回true
+                // Only add if not already found in a sub class
+                return true;
+            } else {
+            //methodClass一定是methodClassOld的父类，因为是向上遍历的，所以父类的方法不会被加入订阅
+                // Revert the put, old class is further down the class hierarchy
+                subscriberClassByMethodKey.put(methodKey, methodClassOld);
+                return false;
+            }
+        }
+```
+可以看到这里同样是一个HashMap类型的`subscriberClassByMethodKey`，而key值对应的就是以“方法名>EventType名”。
+
+`Class<?> methodClassOld = subscriberClassByMethodKey.put(methodKey, methodClass);`
+
+**第一种情况，一个类中存在两个方法名不同，但是是同一个Event类型的订阅方法**，这时由于方法名不同，所有key值不同，所有每次`methodClassOld = null`，所以接下来的判断条件里，会直接返回true。加入这个订阅方法。
+
+**第二种情况，子类和父类存在相同方法名和Event类型的订阅方法（也就是重写）**，这时由于方法名相同，Event类型也相同，所以每次`methodClassOld ！= null`,这时就要看第二个判断条件，**methodClassOld.isAssignableFrom(methodClass)**,这里我们就要明白`isAssignableFrom`函数的作用。
+>class1.isAssignableFrom(class2) class2是不是class1的子类或者子接口
+
+这里我们就会发现在这种情况下，**methodClassOld一定是methodClass的子类。**因为从前面的分析我们知道，**EventBus是从子类向上遍历的过程**，所以先加入的肯定是子类的方法，后加入的肯定是父类的方法，所以`methodClassOld.isAssignableFrom(methodClass)`，这个判断肯定是false，所以最终我们在这种情况下会返回false。**最终也就是说明子类重写的方法会加入订阅，但是父类的被重写的方法不会被加入订阅。**
+>向上回溯到register方法
+```
+public void register(Object subscriber) {
+        //获得订阅者对应的Class,MainActivity.class
+        Class<?> subscriberClass = subscriber.getClass();
+        //找到所有的订阅的方法
+        List<SubscriberMethod> subscriberMethods = subscriberMethodFinder.findSubscriberMethods(subscriberClass);
+        synchronized (this) {
+            for (SubscriberMethod subscriberMethod : subscriberMethods) {
+                subscribe(subscriber, subscriberMethod);
+            }
+        }
+    }
+```
+到这里我们已经分析完`subscriberMethodFinder.findSubscriberMethods(subscriberClass) `中反射到方式获取所有的订阅方法了。可以看到，在获得list后，会进行一次遍历。执行`subscribe `方法。
+```
+// Must be called in synchronized block
+    private void subscribe(Object subscriber, SubscriberMethod subscriberMethod) {
+        Class<?> eventType = subscriberMethod.eventType;
+        //每次都会new了一个Subscription对象，subsciber代表我们的订阅者MainActivity.class, subscriberMethod代表其中的一个订阅的方法。
+        Subscription newSubscription = new Subscription(subscriber, subscriberMethod);
+        //判断是否有以Event.class为key
+        CopyOnWriteArrayList<Subscription> subscriptions = subscriptionsByEventType.get(eventType);
+        //为null说明不存在该参数类型的方法没有被订阅过
+        if (subscriptions == null) {
+            //new 一个
+            subscriptions = new CopyOnWriteArrayList<>();
+            subscriptionsByEventType.put(eventType, subscriptions);
+        } else {
+            //subscriptions不为null的情况是指存在多个订阅这个Event的类。
+            if (subscriptions.contains(newSubscription)) {
+                throw new EventBusException("Subscriber " + subscriber.getClass() + " already registered to event "
+                        + eventType);
+            }
+        }
+
+        int size = subscriptions.size();
+        //如果长度不为0代表该事件有大于一个订阅者，或一个订阅中中有多个订阅方法订阅这个Event，相同参数名的方法
+        for (int i = 0; i <= size; i++) {
+            if (i == size || subscriberMethod.priority > subscriptions.get(i).subscriberMethod.priority) {
+                //按优先级加入
+                subscriptions.add(i, newSubscription);
+                break;
+            }
+        }
+
+        List<Class<?>> subscribedEvents = typesBySubscriber.get(subscriber);
+        if (subscribedEvents == null) {
+            subscribedEvents = new ArrayList<>();
+            typesBySubscriber.put(subscriber, subscribedEvents);
+        }
+        subscribedEvents.add(eventType);
+
+        //粘性事件相关，后面博客会分析
+        //下面是粘性事件的代码
+    }
+```
+**这里就要提到EventBus中我认为最为重要的两个Map中的第一个Map——subscriptionsByEventType**，到后来看完EventBus的源码后你会发现理解这两个Map基本上就理解了EventBus的基本原理。
+
+首先来看第一个Map的数据结构。
+```
+private final Map<Class<?>, CopyOnWriteArrayList<Subscription>> subscriptionsByEventType;
+EventBus(EventBusBuilder builder) {
+        subscriptionsByEventType = new HashMap<>();
+    }
+```
+可以看到这里map是以class为key,CopyOnWriteArrayList<Subscription>为value的**HashMap**,这里要强调一下是HashMap，后面会解释为什么要强调。(HashMap的底层原理？)
+接下来我们根据上面的源码来理解这个Map的作用。
+```
+CopyOnWriteArrayList<Subscription> subscriptions = subscriptionsByEventType.get(eventType);
+```
+首先尝试从subscriptionsByEventType中尝试是否已经存在过这个EventType.
+```
+if (subscriptions == null) {
+            //new 一个
+            subscriptions = new CopyOnWriteArrayList<>();
+            subscriptionsByEventType.put(eventType, subscriptions);
+        } else {
+            //subscriptions不为null的情况是指方法名不同，但是参数类型相同。也就是刚才提到的两种情况中的第一种
+            if (subscriptions.contains(newSubscription)) {
+                throw new EventBusException("Subscriber " + subscriber.getClass() + " already registered to event "
+                        + eventType);
+            }
+        }
+```
+当不存在，处理就比较简单，new一个CopyOnWriteArrayList，并且在`subscriptionsByEventType`中加入一条数据。
+当存在这个EventType，则这时就要判断一下`subscriptions.contains(newSubscription)`是否已经注册过这个类型。这里我们要详细理解一下。
+如何判断一个类已经注册过了。
+```
+//每次都会new了一个Subscription对象，subsciber代表我们的订阅者MainActivity.class, subscriberMethod代表其中的一个订阅的方法。
+        Subscription newSubscription = new Subscription(subscriber, subscriberMethod);
+```
+而我们知道`subscriptions`是一个CopyOnWriteArrayList。这时我们就要看一下`CopyOnWriteArrayList`的源码了，`contain()`最后会走到`indexOf()`方法。
+```
+public boolean contains(Object var1) {
+        Object[] var2 = this.getArray();
+        return indexOf(var1, var2, 0, var2.length) >= 0;
+    }
+//var0 是参数
+//var1 是CopyOnWriteArrayList内部的数组
+//var2 是0
+//var3 是数组的长度
+private static int indexOf(Object var0, Object[] var1, int var2, int var3) {
+        int var4;
+        if(var0 == null) {
+            for(var4 = var2; var4 < var3; ++var4) {
+                if(var1[var4] == null) {
+                    return var4;
+                }
+            }
+        } else {
+            for(var4 = var2; var4 < var3; ++var4) {
+            //是通过equal判断
+                if(var0.equals(var1[var4])) {
+                    return var4;
+                }
+            }
+        }
+
+        return -1;
+    }
+```
+这里
+可以看到，如果判断这个是否已经订阅过了，最后会通过equal方法判断，哪理所当然`Subscription `肯定重写了equal方法。
+```
+@Override
+    public boolean equals(Object other) {
+        if (other instanceof Subscription) {
+            Subscription otherSubscription = (Subscription) other;
+            //==比较的是内存地址，所以如果两个类地址不同，也不相同（栈内存在两个MainActivity),
+            //是否存在相同的订阅类名，方法名，参数类型名（同一个Activity中存在两个不同的方法订阅这个Event）。
+            return subscriber == otherSubscription.subscriber
+                    && subscriberMethod.equals(otherSubscription.subscriberMethod);
+        } else {
+            return false;
+        }
+    }
+```
+对于两个
+最终这里还会比较`SubscriberMethod`重写的equal方法，最后会比较**是否存在相同的订阅类名，方法名，参数类型名。**。**这里其实就是我们刚才讨论的两种特殊情况中的第一种，当存在两个EventType相同，但是方法名不同的情况。**如果一个类中存在多个方法名相同，参数类型相同的方法，则会抛异常。
+```
+int size = subscriptions.size();
+//如果长度不为0代表有大于1个的不同订阅者，或者方法名，相同参数名的方法
+        for (int i = 0; i <= size; i++) {
+            if (i == size || subscriberMethod.priority > subscriptions.get(i).subscriberMethod.priority) {
+                //按优先级加入
+                subscriptions.add(i, newSubscription);
+                break;
+            }
+        }
+```
+当没有抛异常，则会按照优先级进行加入，若没有定义优先级，则末尾加入。到这对于第一个Map我们其实已经有了一个比较深刻的理解
+>第一个Map的作用：保存对于一个Event所有的订阅者和订阅方法，
+这里就放上一张图吧，个人感觉非常有用。
+
+![subscriptionsByEventType](https://upload-images.jianshu.io/upload_images/7866586-e0c65b96d6d85f8c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+```
+//维持当前订阅者订阅的所有Event
+List<Class<?>> subscribedEvents = typesBySubscriber.get(subscriber);
+        if (subscribedEvents == null) {
+            subscribedEvents = new ArrayList<>();
+            typesBySubscriber.put(subscriber, subscribedEvents);
+        }
+        subscribedEvents.add(eventType);
+```
+紧接着，我们会看到EventBus中另一个重要的Map-`typesBySubscriber`,和刚才一样，看一下数据结构。
+```
+private final Map<Object, List<Class<?>>> typesBySubscriber;
+
+typesBySubscriber = new HashMap<>();
+```
+不出意外，还是**HashMap**，这里的逻辑就比较好理解了，key对应的是订阅者类型，Value对应的是一个List<EventType.class>。
+>第二个Map的作用：保存订阅者和订阅者中的所有的订阅Event。
+
+![typesBySubscriber](https://upload-images.jianshu.io/upload_images/7866586-5cda17e576f03715.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+#### 疑惑
+这里其实就要解释我们的一个疑惑了，当栈内存在多个相同的MainActivity时，Eventbus如何订阅的？
+>这里就和我们两个Map有关了，首先第一个Map中对于是否重复订阅使用的`contain`函数进行判断，最后包含==的判断，也就是内存地址的判断，不同的>Activity对象，内存地址肯定不同。
+
+>其次第二个Map,**是一个HashMap**，key就是我们的MainActivity，是一个Object类型，那么多个MainActivity时，加入第二个HashMap，为什么能区分哪？因为**hashCode不同**，根据HashMap的原理，不同的MainActivity的hashcode不同，当然可以都加入了。
+
+后面的代码就是粘性事件相关的代码逻辑了，后面的博客我们会分析。
+### 总结
+这里我们来总结一下注册的流程：
+>1.获取订阅类里的所有的订阅的方法，其中订阅类父类的方法也会被记录，重写的方法不会被记录，方法名不同，参数类型相同的方法会被记录
+>2.填充两个Map，第一个Map记录订阅了Event的所有订阅者和其方法，第二个Map记录了所有的订阅者和其订阅的所有Event。
+
+
+
+
+	

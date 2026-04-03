@@ -1,0 +1,226 @@
+---
+title: "仿QQ音乐底部栏"
+category: "Android自定义View"
+category_slug: "android自定义view"
+source_name: "仿QQ音乐底部栏"
+sort_key: 0072
+---
+最近在开发一款高仿QQ音乐播放器的Demo,遇到了一个问题，在QQ音乐主界面有一个常驻底部栏，底部栏中有一个可左右滑动切歌的组件，最后还是实现了效果，今天来回顾一下实现过程。
+要实现的就是最下方的常驻底部栏。
+![常驻底部栏](http://upload-images.jianshu.io/upload_images/7866586-f553869b28262752?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+首先，当我第一次拿到这个问题的时候我先对这个问题进行了分析，我做的第一步是分析这个组件有什么特点，一下是我总结的特点：
+1.无限轮播，可循环
+2.第一次进入就可以左右滑动
+3.每个view的界面时相同的。
+4.可以监听侧滑，需要实现侧滑事件。
+综上所诉，我确定了两个可能可以实现的组件：
+1.ViewPager2.横向的RecycleView
+
+但各有利弊，ViewPager首先不能实现无限轮播，个数是有限的，不能循环，其次Viewpager第一次进入时不可以左滑（当初始index=0,是不能左滑的）。横向RecycleView没有滑动效果，无法监听侧滑，当然两个条件也无法轻易实现（当时想到RecycleView主要是因为看起来效果像个ListView,但是是横向的，所以就想到近期使用的RecycleView...）
+
+想了很久，最后决定是用ViewPager实现，既然决定实现方式，就要考虑怎么实现，所以实现的关键点就是：无线轮播，循环。
+
+在网上搜索了一下之类的关键词，实现方式无非两种：
+1.有三张图片，实现无限循环。在viewpager中设置5个view，第一个为三张图片的最后一张，第五张为三张图片的第一张。
+![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-49970768a49ded30?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+2.将数量设置足够大，然后将初始位置放在中间
+
+这里分析一下两种实现方式，第一种，实质是对数据的处理，让一开始处于index=1,在列表头加一项，在列表尾加一项，然后实现滑动监听，滑到第一个的时候，通过setCurrentItem实现跳转。
+这个看起来可以实现我们的需求，但是还是有一些问题：
+1.需要对数据进行处理，当数据量小的时候，逻辑好处理，但对于这次的需求，音乐播放器，歌曲数量非常大的时候，比较麻烦。
+**2.这个实现还是脱离不了View,也就是说1000首歌需要分配内存1000个View,这样分配内存在回收内存，非常不合理。**（这是我不采用的主要原因）
+第二种实现方式，其实挺无奈的。。。虽然这种实现方式确实可以实现，但是还是脱离不了那个实质性问题**占用内存**！
+
+问题进展到这有点无法前进了，我在网上搜了许多方式，**但是网上大多是千篇一律的（这是现在很多博客的通病）**，没办法我就自己思考这个问题的实现方式，这个问题现在的难点是怎么让它高性能，不用愚蠢的有多少首歌就需要new多少View或者说Fragment，这样是很占用内存的。
+
+这让我回到最开始分析问题的时候，这个组件有一个特点，那就是，每一页的View布局都是相同的，那岂不是和ListView一样，所以我就想到了ListView的缓存机制。
+![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-ff48c017c408c423?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+**没错就是复用View**
+这个就是我想到的实现思路，Viewpager也可以像ListView一样复用View,这样就不用一个一个声明View了。
+
+找到问题的解决方式，现在就说一下具体实现步骤吧：
+![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-2abfe3521f0b9a1b?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+1.数据处理保证第一次左右都可以划，如果初始在index=0,第一次进入是不可以左滑的，因为左边没有东西。。。
+
+2.滑动监听，当滑动到index=1时，跳转到最后一项。
+if ( position < 1) { //首位之前，跳转到末尾
+cycleViewPager.setCurrentItem(position,false);
+**（这里面false很重要，因为如果你不加false,就会显示滑动效果，这时从第一项滑到最后一项，要显示多少效果。。。，而且监听只用监听从1变到最后一项，从最后一项变到第一项不用监听，因为我实现过，发现从最后一项调回到第一项，会发生ANR,但是从第一项变到最后一项就不会，我也不知道为啥。。。当到达最后一项的时候，去余即可）**
+
+3.自定义adapter(仿ListView的缓存机制，复用view)
+
+4.取余
+position = position%datas.size() == 0?1:position%datas.size()+1;
+
+View的复用机制很简单，就是建立一个缓存Cache,重写PagerAdapter
+关键代码如下：
+
+```
+    public void destroyItem() {
+        View contentView = (View) object;
+        container.removeView(contentView);
+        //destroy的时候把View加入缓存
+        viewCache.add(contentView);
+    }
+          public view getView(){
+          //getView的时候从缓存拿或者new
+            if(viewCache.size() == 0){
+            convertView = layoutInflater.inflate(R.layout.bottom_layout_item,null,false);
+            viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        }else{
+         //getView的时候从缓存拿
+            convertView = viewCache.removeFirst();
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+```
+
+粘一下关键代码吧：
+BottomViewAdapter .java
+```
+package com.project.musicplayer.adapter;
+
+import android.content.Context;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.project.musicplayer.R;
+import com.project.musicplayer.model.Music;
+import com.project.musicplayer.model.Song;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2016/7/5.
+ */
+public class BottomViewAdapter extends PagerAdapter {
+
+    public interface OnViewClickListener{
+        void onViewClicked(int position);
+    }
+
+    private LinkedList<View> viewCache = null;
+    private List<Music> datas;
+    private LayoutInflater layoutInflater;
+    private Context mContext;
+    private OnViewClickListener onViewClickListener;
+
+    public void setOnViewClickListener(OnViewClickListener onViewClickListener) {
+        this.onViewClickListener = onViewClickListener;
+    }
+
+    public BottomViewAdapter(List<Music> songList, Context mContext) {
+        this.datas = songList;
+        this.mContext = mContext;
+        this.layoutInflater = LayoutInflater.from(mContext);
+        this.viewCache = new LinkedList<View>();
+    }
+
+    public void setDatas(List<Music> datas){
+        this.datas = datas;
+    }
+
+
+    @Override
+    public int getCount() {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public boolean isViewFromObject(View arg0, Object arg1) {
+        return arg0 == arg1;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        View contentView = (View) object;
+        container.removeView(contentView);
+        viewCache.add(contentView);
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return super.getPageTitle(position);
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        View convertView = null;
+        ViewHolder viewHolder = null;
+        if(position >= datas.size()){
+            position = position%datas.size() == 0?1:position%datas.size()+1;
+        }
+/*        if(position == 0){
+            position++;
+        }*/
+        if(viewCache.size() == 0){
+            convertView = layoutInflater.inflate(R.layout.bottom_layout_item,null,false);
+            viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        }else{
+            convertView = viewCache.removeFirst();
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+        viewHolder.name.setText(datas.get(position).getTitle());
+        viewHolder.author.setText(datas.get(position).getSinger());
+        container.addView(convertView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        final int finalPosition = position;
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(onViewClickListener != null){
+                    onViewClickListener.onViewClicked(finalPosition);
+                }
+            }
+        });
+
+        return convertView;
+    }
+
+    /**
+     * 进行View预加载处理
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        // TODO Auto-generated method stub
+        super.setPrimaryItem(container, position, object);
+        mIndex = position % listViews.size();
+        if (loadTag.get(listViews.get(mIndex)) == false) {
+            mContext.createView(mIndex);
+            loadTag.put(listViews.get(mIndex), true);
+        }
+    }*/
+    class ViewHolder{
+        TextView name;
+        TextView author;
+        public ViewHolder(View view){
+            name = (TextView) view.findViewById(R.id.tv_id_name);
+            author = (TextView) view.findViewById(R.id.tv_id_author);
+        }
+    }
+}
+
+```
+MainActivity.java
+```
+ public void onPageSelected(int position) {
+        mCurrentIndex = position;
+        if ( songList.size() > 1) { //多于1，才会循环跳转
+            if ( position < 1) { //首位之前，跳转到末尾（N）
+                position = songList.size()-1;
+                cycleViewPager.setCurrentItem(position,false);
+            }
+        }
+        if(position >= songList.size()){
+            mCurrentIndex = position%songList.size() == 0?1:position%songList.size()+1;
+        }
+        mCurrentSong = songList.get(mCurrentIndex);
+    }
+```

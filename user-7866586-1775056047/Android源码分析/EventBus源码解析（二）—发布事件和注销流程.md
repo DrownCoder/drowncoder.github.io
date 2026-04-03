@@ -1,0 +1,222 @@
+>1.[EventBus源码解析（一）—订阅过程](https://www.jianshu.com/p/2e0182991ac9)
+>2.[EventBus源码解析（二）—发布事件和注销流程](https://www.jianshu.com/p/ebec755ce098)
+>3.[EventBus源码解析（三）—进阶源码](https://www.jianshu.com/p/ca36147d910a)
+## 前言
+上一篇[博客](https://www.jianshu.com/p/2e0182991ac9)已经比较详细的讲解了EventBus的注册过程，有了上一篇博客的基础，其实关于EventBus的源码中的其他流程就非常好理解了，尤其是我认为EventBus中最为重要的两个Map，理解了两张图其实就理解了EventBus的原理。
+## 源码分析
+### 1.发布事件
+#### post方法
+```
+/** Posts the given event to the event bus. */
+    public void post(Object event) {
+        //ThreadLocal保存的，不同的线程互相不干扰
+        PostingThreadState postingState = currentPostingThreadState.get();
+        List<Object> eventQueue = postingState.eventQueue;
+        // 将事件添加进当前线程的事件队列
+        eventQueue.add(event);
+
+        if (!postingState.isPosting) {//如果当前线程正在发送
+            postingState.isMainThread = isMainThread();
+            postingState.isPosting = true;
+            if (postingState.canceled) {
+                throw new EventBusException("Internal error. Abort state was not reset");
+            }
+            try {
+                while (!eventQueue.isEmpty()) {
+                    //循环从队首取消息，发送消息
+                    postSingleEvent(eventQueue.remove(0), postingState);
+                }
+            } finally {
+                postingState.isPosting = false;
+                postingState.isMainThread = false;
+            }
+        }
+    }
+```
+既然是发布事件，肯定是post方法。
+这里首先要注意一点，这里的`currentPostingThreadState`是一个ThreadLocal类型，既然选择TreadLocal类型，那么特点当然就是**线程单例**，不同的线程之间互相不干扰，因为我们知道EventBus是支持多线程之间的事件传递的。
+接下来的源码都比较简单，将事件加入当前线程中用于保存事件的队列中，然后遍历队列中的事件，执行`postSingleEvent `方法发送事件。
+```
+private void postSingleEvent(Object event, PostingThreadState postingState) throws Error {
+        Class<?> eventClass = event.getClass();
+        boolean subscriptionFound = false;
+        if (eventInheritance) {
+            //找到类和它的父类
+            List<Class<?>> eventTypes = lookupAllEventTypes(eventClass);
+            int countTypes = eventTypes.size();
+            for (int h = 0; h < countTypes; h++) {
+                Class<?> clazz = eventTypes.get(h);
+                subscriptionFound |= postSingleEventForEventType(event, postingState, clazz);
+            }
+        } else {
+            //直接发送当前类
+            subscriptionFound = postSingleEventForEventType(event, postingState, eventClass);
+        }
+        if (!subscriptionFound) {
+        //没有找到
+            if (logNoSubscriberMessages) {
+                logger.log(Level.FINE, "No subscribers registered for event " + eventClass);
+            }
+            if (sendNoSubscriberEvent && eventClass != NoSubscriberEvent.class &&
+                    eventClass != SubscriberExceptionEvent.class) {
+                post(new NoSubscriberEvent(this, event));
+            }
+        }
+    }
+```
+可以看到这里的流程比较简单，基本都是最后调用了`postSingleEventForEventType `方法，当然如果没有找到，则会发送一条没有找到的`NoSubscriberEvent `.
+这里有个比较重要的参数`eventInheritance `，这个如果我们没有特殊配置的话，默认是true，我们来看一下这个参数是干什么的，可以看到当这个参数为true的时候，会调用`lookupAllEventTypes `方法，返回一个List集合。
+```
+private static List<Class<?>> lookupAllEventTypes(Class<?> eventClass) {
+        synchronized (eventTypesCache) {
+            List<Class<?>> eventTypes = eventTypesCache.get(eventClass);
+            if (eventTypes == null) {
+                eventTypes = new ArrayList<>();
+                Class<?> clazz = eventClass;
+                while (clazz != null) {
+                    //加入当前类
+                    eventTypes.add(clazz);
+                    //加入当前类的所有接口
+                    addInterfaces(eventTypes, clazz.getInterfaces());
+                    //加入当前的父类
+                    clazz = clazz.getSuperclass();
+                }
+                eventTypesCache.put(eventClass, eventTypes);
+            }
+            return eventTypes;
+        }
+    }
+```
+可以看到，这个方法的所用就是用一个List保存该Event类型自己本身，和其继承的所有父类，和实现的所有接口。
+所以当得到这个List集合后，会遍历这个集合，调用`postSingleEventForEventType `发送事件，所以这里可以**看出默认情况下不要随意将Event继承或者实现接口，当发送该Event的时候，都会一并发出。**
+```
+private boolean postSingleEventForEventType(Object event, PostingThreadState postingState, Class<?> eventClass) {
+        CopyOnWriteArrayList<Subscription> subscriptions;
+        synchronized (this) {
+            //获得所有注册该事件的订阅者
+            subscriptions = subscriptionsByEventType.get(eventClass);
+        }
+        if (subscriptions != null && !subscriptions.isEmpty()) {
+            for (Subscription subscription : subscriptions) {
+                postingState.event = event;
+                postingState.subscription = subscription;
+                boolean aborted = false;
+                try {
+                    //反射发送事件
+                    postToSubscription(subscription, event, postingState.isMainThread);
+                    aborted = postingState.canceled;
+                } finally {
+                    postingState.event = null;
+                    postingState.subscription = null;
+                    postingState.canceled = false;
+                }
+                if (aborted) {
+                    break;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+```
+这时就可以看到我们前一篇[博客](https://www.jianshu.com/p/2e0182991ac9)提到的非常重要的一个Map：**`subscriptionsByEventType`**，这里放上这个Map的图便于理解。
+![subscriptionsByEventType](https://upload-images.jianshu.io/upload_images/7866586-e0c65b96d6d85f8c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+所以我们通过Event的类型，找到了所有订阅该Event的信息`CopyOnWriteArrayList<Subscription>`。接下来就是遍历这个List调用`postToSubscription `方法，利用**反射**来调用订阅的方法。
+```
+private void postToSubscription(Subscription subscription, Object event, boolean isMainThread) {
+        switch (subscription.subscriberMethod.threadMode) {
+            //默认类型
+            case POSTING:
+                invokeSubscriber(subscription, event);
+                break;
+            case MAIN:
+                if (isMainThread) {
+                    //如果当前就在UI线程，则直接反射执行
+                    invokeSubscriber(subscription, event);
+                } else {
+                    mainThreadPoster.enqueue(subscription, event);
+                }
+                break;
+            case MAIN_ORDERED:
+                //不同于MAIN，直接通过Handler的队列执行，串行的
+                if (mainThreadPoster != null) {
+                    mainThreadPoster.enqueue(subscription, event);
+                } else {
+                    // temporary: technically not correct as poster not decoupled from subscriber
+                    invokeSubscriber(subscription, event);
+                }
+                break;
+            case BACKGROUND:
+                if (isMainThread) {
+                    //如果当前是UI线程，则异步
+                    backgroundPoster.enqueue(subscription, event);
+                } else {
+                    //不是UI线程，则在该线程执行
+                    invokeSubscriber(subscription, event);
+                }
+                break;
+            case ASYNC:
+                asyncPoster.enqueue(subscription, event);
+                break;
+            default:
+                throw new IllegalStateException("Unknown thread mode: " + subscription.subscriberMethod.threadMode);
+        }
+    }
+```
+可以看到这里实现了EventBus中的多线程功能，具体实现本篇博客就不做讲解了，后面如果有时间，会讲解一下EventBus中的多线程。
+可以看到最后其实都是调用`invokeSubscriber `方法，从命名就能看出实现原理就是**反射**
+```
+void invokeSubscriber(Subscription subscription, Object event) {
+        try {
+            //通过反射执行事件
+            subscription.subscriberMethod.method.invoke(subscription.subscriber, event);
+        } catch (InvocationTargetException e) {
+            handleSubscriberException(subscription, event, e.getCause());
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Unexpected exception", e);
+        }
+    }
+```
+果然不出所料，最后就是通过我们经常看到的反射里调用订阅者中的订阅方法，来实现EventBus中的事件流程。
+### 2.注销流程
+#### unregister
+```
+public synchronized void unregister(Object subscriber) {
+        //找到订阅者订阅的所有事件类型，也就是MainActivity中所有的Event
+        List<Class<?>> subscribedTypes = typesBySubscriber.get(subscriber);
+        if (subscribedTypes != null) {
+            for (Class<?> eventType : subscribedTypes) {
+                //到Event的map中删除MainActivity
+                unsubscribeByEventType(subscriber, eventType);
+            }
+            typesBySubscriber.remove(subscriber);
+        } else {
+            logger.log(Level.WARNING, "Subscriber to unregister was not registered before: " + subscriber.getClass());
+        }
+    }
+```
+可以看到这里又用到我们所说的重要的Map中的其中一个`typesBySubscriber`，这里再放一下这个Map的图便与我们理解。
+![typesBySubscriber](https://upload-images.jianshu.io/upload_images/7866586-5cda17e576f03715.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+可以看到这里，从`typesBySubscriber`map中取出当前订阅者的订阅的所有事件集合List，然后再遍历这个List,调用`unsubscribeByEventType `方法进行取消订阅，其实很容易联想到这个方法肯定是再到另一个重要的Map中查找订阅了这个Event的订阅者中移除当前Activity的订阅者。
+```
+private void unsubscribeByEventType(Object subscriber, Class<?> eventType) {
+        List<Subscription> subscriptions = subscriptionsByEventType.get(eventType);
+        if (subscriptions != null) {
+            int size = subscriptions.size();
+            for (int i = 0; i < size; i++) {
+                Subscription subscription = subscriptions.get(i);
+                //判断两个变量指向的是否是同一个内存地址
+                if (subscription.subscriber == subscriber) {
+                    subscription.active = false;
+                    subscriptions.remove(i);
+                    i--;
+                    size--;
+                }
+            }
+        }
+    }
+```
+果然不出所料，又看到我们熟悉的另一个Map`subscriptionsByEventType`,这里遍历该Activity中订阅的所有事件，然后通过Event到`subscriptionsByEventType`中查找订阅了该Event的`List<Subscription>`集合，然后找到当前这个订阅者（**注意这里使用的是==，来判断两个Object对象是否相等，意味着是内存地址相同**），找到后移除。至此注销流程也到此结束。
+### 3.总结
+通过本篇博客，EventBus的基本流程基本上我们已经有了一定程度上的理解，详细阅读了这两篇博客后对于第一篇博客中提出的问题也能相应理解。**而且更重要的贯彻EventBus整个流程的两个重要的Map。**

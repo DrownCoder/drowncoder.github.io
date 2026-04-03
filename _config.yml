@@ -1,0 +1,30 @@
+title: Xuan's Blog
+description: 记录 Android、技术学习与生活随笔
+lang: zh-CN
+timezone: Asia/Shanghai
+url: ""
+baseurl: ""
+markdown: kramdown
+highlighter: rouge
+permalink: /:collection/:path/
+
+collections:
+  articles:
+    output: true
+    permalink: /articles/:path/
+
+defaults:
+  - scope:
+      path: ""
+      type: "articles"
+    values:
+      layout: article
+
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+exclude:
+  - user-7866586-1775056048.rar
+  - scripts
+  - README.local.md

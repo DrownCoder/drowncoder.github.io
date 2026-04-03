@@ -1,0 +1,21 @@
+---
+layout: default
+---
+<article class="post">
+  <header class="post-header">
+    <p class="eyebrow">{{ page.category }}</p>
+    <h1>{{ page.title }}</h1>
+    <div class="post-meta">
+      <span>原始文件：{{ page.source_name }}</span>
+      <span>迁移方式：Markdown</span>
+    </div>
+  </header>
+
+  <div class="post-content">
+    {{ content }}
+  </div>
+
+  <footer class="post-footer">
+    <a href="{{ '/categories/#' | append: page.category_slug | relative_url }}">返回分类页</a>
+  </footer>
+</article>
