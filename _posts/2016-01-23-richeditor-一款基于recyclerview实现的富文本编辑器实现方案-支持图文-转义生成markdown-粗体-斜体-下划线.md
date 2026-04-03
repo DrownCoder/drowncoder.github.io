@@ -38,14 +38,14 @@ and much more...
 8.最终编辑文本转MarkDown(有Bug～。。。。)
 等。。。
 ### 实现效果
-![效果图](https://upload-images.jianshu.io/upload_images/7866586-08b3647c4e8e0442.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-![样式拼接](https://upload-images.jianshu.io/upload_images/7866586-93e0b97fb8bd4aa2.gif?imageMogr2/auto-orient/strip)
+![效果图](/assets/img/posts/f54f5d849e788191.png)
+![样式拼接](/assets/img/posts/e3d7425cba4f968c.gif)
 >对于RecyclerView实现而言，回车对应的操作就是增加一个Model，所以回车换行和删除就需要做非常多的逻辑情况处理，并且还涉及到样式索引的拼接和分割，总之是一个大坑。
 
-![样式选中修改](https://upload-images.jianshu.io/upload_images/7866586-839cb0eed0dd0436.gif?imageMogr2/auto-orient/strip)
+![样式选中修改](/assets/img/posts/02ef4c0c7141fce2.gif)
 >选中后，需要对光标，样式的索引，样式的清除和分割，还有样式的重新创建和赋值，大坑啊大坑。
 
-![样式同步](https://upload-images.jianshu.io/upload_images/7866586-6d220d43e05ed961.gif?imageMogr2/auto-orient/strip)
+![样式同步](/assets/img/posts/56e0c6df46f7c77b.gif)
 >光标对应到对应样式的字符串时，下面的面板对应实时更改当前样式，需要利用区间的逻辑判断，对光标和样式区间进行逻辑判断，坑越来越多。。。
 
 还有许多复杂的交互处理，这里没有展示，具体大家可以查看源码。
@@ -90,7 +90,7 @@ public interface onEditorCallback {
 }
 ```
 ### 架构图
-![架构图](https://upload-images.jianshu.io/upload_images/7866586-99c0138eac156e24.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![架构图](/assets/img/posts/ed976cfd396658c2.png)
 
 ####1.RichBuilder
 全局单例，底层架构，帮助RichEditor整体的功能实现。

@@ -1,5 +1,5 @@
 ---
-title: "【重拾View(一)】——setContentView()源码解析"
+title: 【重拾View(一)】——setContentView()源码解析
 date: 2018-09-01 18:24:42+08:00
 categories: ["Android源码分析"]
 source_name: "【重拾View(一)】——setContentView()源码解析"
@@ -14,7 +14,7 @@ jianshu_url: "https://www.jianshu.com/p/9e1cf127f0ae"
 **【重拾View】**这个系列主要是想对View的各方面进行细化和回顾，随着Android研究的深入，对View的理解只停留在刚开始接触自定义View三部曲，简单知道onMeasure,onLayout,onDraw等仅仅和View相关联的使用层级的理解，感觉是远远不够的。本篇博客就分析一下我们**最常见**的一个方法`setContentView`，但是又没有真正关注过底层的实现。
 ### 层级关系
 分析完本篇博客，会对下图有了更深对理解。
-![层级关系](https://upload-images.jianshu.io/upload_images/7866586-1cdd0a7e3ba45739.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![层级关系](/assets/img/posts/8137756b3e7bc60d.png)
 ### 主要流程源码
 ```
 public void setContentView(@LayoutRes int layoutResID) {
@@ -894,7 +894,7 @@ public void setContentView(@LayoutRes int layoutResID) {
 >5.最后通过LayoutInflater将我们自己创建的Activity布局文件加入到刚才那个名为content的FrameLayout中。
 
 通过这次分析我们对下图，也就是我们常见的一个Android页面层级关系有了一个很深的认识，当然我们也会发现`LayoutInflater`这个我们常用类的重要性，下一篇博客会对该类进行分析。
-![层级关系](https://upload-images.jianshu.io/upload_images/7866586-1cdd0a7e3ba45739.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![层级关系](/assets/img/posts/8137756b3e7bc60d.png)
 
 ### 推荐&学习&参考博客
 [从setContentView方法分析Android加载布局流程](https://blog.csdn.net/feiduclear_up/article/details/46711921)

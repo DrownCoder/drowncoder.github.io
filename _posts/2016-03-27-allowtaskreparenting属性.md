@@ -1,5 +1,5 @@
 ---
-title: "allowTaskReparenting属性"
+title: allowTaskReparenting属性
 date: 2017-09-26 00:25:17+08:00
 categories: ["读书笔记"]
 source_name: "allowTaskReparenting属性"
@@ -34,27 +34,27 @@ category的匹配原则是：
 对应上面的过程，我通过**adb shell dumpsys activity**命令查看当前的activity和activity栈情况
 
 ##### >启动应用1
-![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-cf908fc9cacbac7b?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![这里写图片描述](/assets/img/posts/6528819c0f7b1643.webp)
 可以看到，这时只有应用1的MainActivity存在
 ##### >点击跳转到TestActivity
-![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-59182c74c8c6f8b2?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![这里写图片描述](/assets/img/posts/08faa3d52805e92e.webp)
 
-![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-ef43b09666195c3c?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![这里写图片描述](/assets/img/posts/bb7823bba8d6ba33.webp)
 可以看到，这时应用2的TestActivity存在于应用1的Activity栈中，这时存在两个Activity，分别是TestActivity和MainActivityA,都存在于应用1的默认的Activity栈中。
 ##### >按下Home键
-![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-82b5ef31e993da10?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![这里写图片描述](/assets/img/posts/c92e1ba8937b5e28.webp)
 
 
 可以看到这时和上面的情况并没有什么实质性变化
 ##### >启动应用2
-![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-68947a33c5040bbd?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![这里写图片描述](/assets/img/posts/5a2c687edbe027fd.webp)
 
-![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-455e890e54baaba5?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![这里写图片描述](/assets/img/posts/41727cb4dc498070.webp)
 
 **这时候allowTaskReparenting=true的效果就出来了，本来应该展示的是应用2的Main入口Activity，也就是MainActivityB，但是这时刚才在应用1的Activity栈中的TestActivity就跑到了应用2的Activity栈中，并且位于栈顶，而应用1的Activity栈中只存在了MainAcitivityA**
 ##### >按下返回键
-![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-7a0e257df1ecd875?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![这里写图片描述](/assets/img/posts/338478aea82e93db.webp)
 
-![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-a7f071809e15c7f0?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![这里写图片描述](/assets/img/posts/b47dfa8fdc734bdf.webp)
 
 **一开始我以为这时按下返回键会直接回到主界面，但是没想到会启动MainActivityB，上一步骤也看到了启动应用2后，虽然TestActivity移动到了栈顶，但其实MainActivityB还是存在于栈中的，作为Main入口，所以按下返回键，就会启动MainActivityB,但是我通过生命周期发现，其实这时MainActivityB才开始从onCreate开始走生命周期**

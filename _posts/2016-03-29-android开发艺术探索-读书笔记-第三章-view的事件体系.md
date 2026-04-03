@@ -1,5 +1,5 @@
 ---
-title: "第三章 View的事件体系"
+title: "《Android开发艺术探索》读书笔记-第三章 View的事件体系"
 date: 2017-09-26 00:26:13+08:00
 categories: ["读书笔记"]
 source_name: "《Android开发艺术探索》读书笔记-第三章-View的事件体系"

@@ -1,5 +1,5 @@
 ---
-title: "Android增强现实（二）-支持拖拽控制进度和伸缩的VrGifView"
+title: Android增强现实（二）-支持拖拽控制进度和伸缩的VrGifView
 date: 2018-01-02 21:26:14+08:00
 categories: ["Android自定义View"]
 source_name: "Android增强现实（二）-支持拖拽控制进度和伸缩的VrGifView"
@@ -12,7 +12,7 @@ jianshu_url: "https://www.jianshu.com/p/abd1772cb061"
 ### 前言
 前段时间研究了一下增强现实在Android端的实现，目前大体分为两种，全景立体图（GIF和全景图）和3D模型图。这篇博客主要讲一下关于GIF相关的实现方式。
 ###  效果
-![VrGifView](http://upload-images.jianshu.io/upload_images/7866586-ef7c6eb4e2392371.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![VrGifView](/assets/img/posts/14b95dd7008dccb2.gif)
 
 ### 使用方式	
 1.Add it in your root build.gradle at the end of repositories:
@@ -54,7 +54,7 @@ public class GifActivity extends AppCompatActivity {
 }
 ```
 ### 技术分析
-![京东 ](http://upload-images.jianshu.io/upload_images/7866586-3e60f0d9040c9e28.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![京东 ](/assets/img/posts/0e0f7be4985a3cfe.gif)
 
 大家应该在淘宝和京东上看到过这样的实现效果吧，我对他的分析是这样的：
 >1.首先这是一个商品全景自动旋转的gif图。

@@ -1,5 +1,5 @@
 ---
-title: "MediaPlayer源码存在的内存泄漏问题，释放资源的正确方式"
+title: MediaPlayer源码存在的内存泄漏问题，释放资源的正确方式
 date: 2017-09-26 00:30:36+08:00
 categories: ["Android源码分析"]
 source_name: "MediaPlayer源码存在的内存泄漏问题，释放资源的正确方式"
@@ -59,7 +59,7 @@ LeakCanary提供的Log信息：
 可以看到我重写了Activity的生命周期，在OnDestroy方法中释放了Mediaplayer的资源，释放Mediaplayer的资源的方法也是网络上常用的释放Meidplayer的步骤。但是问题来了，这样怎么会造成内存泄漏哪？
 
 最后，还是老外厉害啊，在stackoverflow上找到一篇文章，问题一模一样，[原文链接](http://stackoverflow.com/questions/33221516/android-media-player-keeps-app-instance-and-cause-a-memory-leak)
-![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-6bdc51c7c3caf7b4?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![这里写图片描述](/assets/img/posts/6ab3f2e68e740788.webp)
 
 大概意思是，他查看了Mediaplayer的源码，发现存在一个引用，应该回收，但是在release方法中，并没有没处理，只有在reset方法中，这个引用才被消除。
 **所以结论来了：**释放资源的正确方式：

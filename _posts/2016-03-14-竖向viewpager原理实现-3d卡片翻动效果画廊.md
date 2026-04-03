@@ -1,12 +1,12 @@
 ---
-title: "竖向Viewpager原理实现（3D卡片翻动效果画廊）"
+title: 竖向Viewpager原理实现（3D卡片翻动效果画廊）
 date: 2017-09-26 00:29:50+08:00
 categories: ["Android自定义View"]
 source_name: "竖向Viewpager原理实现（3D卡片翻动效果画廊）"
 jianshu_views: 2590
 jianshu_url: "https://www.jianshu.com/p/ee8a37ea736d"
 ---
-![效果](http://upload-images.jianshu.io/upload_images/7866586-0c1cab5626ed883b?imageMogr2/auto-orient/strip)
+![效果](/assets/img/posts/286fab65d7895624.webp)
 ### 效果：
 1.竖向的Viewpager
 2.3D翻动效果
@@ -40,7 +40,7 @@ jianshu_url: "https://www.jianshu.com/p/ee8a37ea736d"
     }
 
 可以看到这里，重写了onInterceptTouchEvent，在这里调用了swapXY方法，这个方法主要是交换了触摸位置的X,Y坐标，但是代码可能理解起来有点困难，可以这样理解：  
-![](http://upload-images.jianshu.io/upload_images/7866586-40ba354207f4c4a1?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](/assets/img/posts/4cf73b6754f2f95e.webp)
 Viewpager的默认布局方式如图所示，**也就是只能触发你的横向事件，竖向的滑动并不会影响Viewpager的滑动**。
 这里为了使竖向的滑动起效果，可以看到newX = (ev.getY() / height) * width这里当你Y轴移动了，通过高宽比，转变成X轴的移动。  
 当手指移动距离：ev.getY() = height,newX = height/height*width = width对应的X轴就移动了width长度，这也就为后来的实现提供了基础
@@ -76,9 +76,9 @@ Viewpager的默认布局方式如图所示，**也就是只能触发你的横向
     }
 
 重写的PageTransformer的transformPage的方法，这里重点要理解position参数。这里我画了个图方便理解，由图可见：
-![](http://upload-images.jianshu.io/upload_images/7866586-062fdb6634a5a692?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
-![](http://upload-images.jianshu.io/upload_images/7866586-0412b0f77aa62857?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-![](http://upload-images.jianshu.io/upload_images/7866586-9862d9497ae8ec01?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](/assets/img/posts/5e7c792af1acbad3.webp)  
+![](/assets/img/posts/122a9e510760f6dc.webp)
+![](/assets/img/posts/65380072779f7f54.webp)
 初始时，前三张的position分别为0,1,2。  
 向左滑动一页：前三张的position分别为-1,0,1
 再向左滑一页：前三张的position分别为-2,-1,0
@@ -86,7 +86,7 @@ Viewpager的默认布局方式如图所示，**也就是只能触发你的横向
 **这里我将当前页设置为最后一页（总量为8）**，那么显示的position分别为-7，-6...-2,-1,0
 #### 现在来一步一步实现
 **1.实现X坐标相同**
-![](http://upload-images.jianshu.io/upload_images/7866586-d0eccd1dcce92cc8?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](/assets/img/posts/a99b6841f67eb596.webp)
 
 ```
 view.setTranslationX(view.getWidth() * -position);
@@ -96,7 +96,7 @@ view.setTranslationX(view.getWidth() * -position);
 
 这时候可以想到，所有的页面都重叠在一起，位置在position=0的地方。
 **2.实现Y坐标逐减**
-![](http://upload-images.jianshu.io/upload_images/7866586-cc61ee2432047aac?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)![](http://upload-images.jianshu.io/upload_images/7866586-96d601509b99db58?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](/assets/img/posts/7e0f041587dad5d9.webp)![](/assets/img/posts/febc7f3e81dfe707.webp)
 现在则需要将页面的Y坐标，分别向上移动一点距离，这里我通过0.9的幂函数来实现错开。
 
 ```
@@ -154,7 +154,7 @@ view.setRotationX(180 * -position);
 ```
 
 一开始我以为这样就实现了效果，但是运行效果会发现很奇怪
-![](http://upload-images.jianshu.io/upload_images/7866586-1f466c65474f59a2?imageMogr2/auto-orient/strip)
+![](/assets/img/posts/5981090ba6f86e91.webp)
 最后通过网上搜寻发现原因就是需要使用这个函数，改变视角距离，贴近屏幕，看起来才正确。
 
 ```

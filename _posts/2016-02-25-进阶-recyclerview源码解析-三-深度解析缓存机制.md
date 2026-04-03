@@ -1,5 +1,5 @@
 ---
-title: "【进阶】RecyclerView源码解析(三)——深度解析缓存机制"
+title: 【进阶】RecyclerView源码解析(三)——深度解析缓存机制
 date: 2018-04-17 21:12:20+08:00
 categories: ["Android源码分析"]
 source_name: "【进阶】RecyclerView源码解析(三)——深度解析缓存机制"
@@ -14,7 +14,7 @@ jianshu_url: "https://www.jianshu.com/p/2b19e9bcda84"
 >5.[【框架】基于AOP的RecyclerView复杂楼层样式的开发框架，楼层打通，支持组件化，支持MVP(不用每次再写Adapter了～)](https://www.jianshu.com/p/f45e4bcb8d92)
 
 上一篇博客从源码角度分析了RecyclerView读取缓存的步骤，让我们对于RecyclerView的缓存有了一个初步的理解，但对于RecyclerView的缓存的原理还是不能理解。本篇博客将从实际项目角度来理解RecyclerView的缓存原理。
-项目的截图如下：![Demo](https://upload-images.jianshu.io/upload_images/7866586-3990225f3523549f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+项目的截图如下：![Demo](/assets/img/posts/a593ea3256419fb6.png)
 
 其中可以看到，这里是一个我们经常使用RecycleView实现列表。右侧输出面板展示了ScrapView的最大数量，CacheView的数量和内容，Pool中存在的内容。左侧面板展示了onBindViewHolder和onCreateViewHolder的过程。(Demo是基于一篇博客的Demo的拓展:[手摸手第二弹，可视化 RecyclerView 缓存机制](https://juejin.im/post/5a5d3d9b518825734216e1e8))
 Demo地址：[RecyclerViewStudy](https://github.com/DrownCoder/RecyclerViewStudy)感兴趣的可以顺手点个star~
@@ -86,8 +86,8 @@ public void setAllCache() {
 
 ```
 可以看到这里，当RecyclerView内部对**mAttachedScrap**进行add和remove的时候，我们都会进行打印log。并且记录一下maxSize。按照我们的猜想，RecyclerView会在onLayout的过程中对**mAttachedScrap**进行添加和移除操作，执行完后，**mAttachedScrap**的大小为0。
-![第一次进入应用](https://upload-images.jianshu.io/upload_images/7866586-6a6831c354596245.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-![Log截图](https://upload-images.jianshu.io/upload_images/7866586-2f77e2817c3c472e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![第一次进入应用](/assets/img/posts/4d9abec14226b95f.png)
+![Log截图](/assets/img/posts/5d595a7d38086059.png)
 可以看到我们打开应用Demo的这个操作，没有做其他任何操作，仅仅是打开，**mAttachedScrap**经历了添加屏幕内9个ChildView的过程，并将9个ChildView移除的过程。而**mAttachedScrap**的大小刚好为屏幕内可以显示的Item的数量。
 为什么说不需要重写Bind哪？通过上篇[博客](https://www.jianshu.com/p/e44961f8add5)，我们从源码角度对RecyclerView的缓存有了一个初步的了解：
 ```
@@ -265,13 +265,13 @@ void recycleViewHolderInternal(ViewHolder holder) {
 #### 2.2 Demo验证
 (1)**进入应用**
 我们首先进入应用会发现当前CacheViews的大小是0，也就是说进入应用时没有滑动，是没有任何ViewHolder回收的，这不需要解释吧。。。，而且Bind也只走了页面渲染的0-8。
-![进入应用](https://upload-images.jianshu.io/upload_images/7866586-3e33cc814cf14e0e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![进入应用](/assets/img/posts/dfa3fb15d9e5128c.png)
 (2)**向下滑动一个，第一个移除**
 这时我们向下滑动，加载出第9个
-![滑动一个](https://upload-images.jianshu.io/upload_images/7866586-af5a82bc8b861c03.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![滑动一个](/assets/img/posts/3283294565df9351.png)
 可以看到这时候除了加载了页面的```position=9```，还提前加载出了```position=10```，执行了onBind，而这时，由于第一个移出界面，所以```position=0```也就被加入到了CacheViews中。
 (3)**向上滑动，再显示第一个**
-![回到顶部](https://upload-images.jianshu.io/upload_images/7866586-17d471205181c301.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![回到顶部](/assets/img/posts/5130eaf73563cdfe.png)
 这时候我们会发现几个特别的点：
 >1.onBind的面板没有新的Log，说明新出来的```position=0```没有走onBind方法。
 >2.CacheViews中由刚才保存的```position=0```和```position=10```，变成了```position=10```和```position=9```
@@ -330,7 +330,7 @@ void resetInternal() {
 可以看到所有被put进入RecyclerPool中的ViewHolder都会被重置，这也就意味着RecyclerPool中的ViewHolder再被复用的时候是需要重新Bind的。这一点就可以区分和CacheViews中缓存的区别。
 ### 总结
 还是那篇[Bugly博客](https://segmentfault.com/a/1190000007331249)中的图片吧（都怪我太懒了。。。）
-![缓存总结](https://upload-images.jianshu.io/upload_images/7866586-921306270df56c0f.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![缓存总结](/assets/img/posts/9c246973157fb91b.jpg)
 看过上面的分析，这张图片就很好理解了。
 
 ### 最后

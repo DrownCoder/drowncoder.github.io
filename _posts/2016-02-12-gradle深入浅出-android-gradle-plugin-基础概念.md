@@ -1,5 +1,5 @@
 ---
-title: "系列目录"
+title: "【Gradle深入浅出】——Android Gradle Plugin 基础概念"
 date: 2020-12-31 16:50:39+08:00
 categories: ["Android源码分析"]
 source_name: "【Gradle深入浅出】——Android-Gradle-Plugin-基础概念"
@@ -114,7 +114,7 @@ flavor会和buildType做一个组合,生成编译task
 BuildVariant = ProductFlavor x BuildType
 ```
 也就是我们刚才上面说的BuildType和ProductFlavor的组合，最终来构建产物，我们Studio面板的左边的侧边栏就有对应的`BuildVariant`选项，用于我们来进行构建选择。
-![Studio](https://upload-images.jianshu.io/upload_images/7866586-0c49256253a20dcb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Studio](/assets/img/posts/0f4c59c643d7e6d6.png)
 
 例如如下的配置：
 ```
@@ -209,13 +209,13 @@ android {
 }
 ```
 官方对于`SourceSets`的配置项的介绍：
-![配置项](https://upload-images.jianshu.io/upload_images/7866586-d473b9cc7c817a95.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![配置项](/assets/img/posts/2604dab483c9fd90.png)
 
 当然SourceSets也可以指定多个路径，比如如果我们指定我们的Java路径是`src/main.java`我们在这个目录下使用Studio创建Java文件，就会发现有Javb Class的选项
-![src/java](https://upload-images.jianshu.io/upload_images/7866586-25491ea9013c56a0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![src/java](/assets/img/posts/357a0c5b26d59eac.png)
 
 但如果我们这时候在src目录下新建一个`src/test`目录，我们再使用Studio创建文件，就会发现没有Java Class的选项，这就是因为我们配置来`SourceSets`，所以我们需要在`Sourcesets`中增加一个路径。
-![image.png](https://upload-images.jianshu.io/upload_images/7866586-68c2db4814eafdc3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![image.png](/assets/img/posts/a97fd6af8a8128dd.png)
 
 ```
 android {

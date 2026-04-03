@@ -1,5 +1,5 @@
 ---
-title: "【重拾View(三)】——LayoutInflater中Factory源码解析"
+title: 【重拾View(三)】——LayoutInflater中Factory源码解析
 date: 2018-11-04 15:24:24+08:00
 categories: ["Android源码分析"]
 source_name: "【重拾View(三)】——LayoutInflater中Factory源码解析"
@@ -297,7 +297,7 @@ public void setFactory2(Factory2 factory) {
     />
 ```
 首先我们知道，`Fragment`是可以使用标签在XML中定义的，所以我们可以从这个角度考虑一下，看过上一篇博客的应该清楚，在解析XML的时候，特殊的标签都会有专门的条件判断进行解析，例如`merge`，但是却没有`Fragment`标签，结合前面的分析，我们这时候应该就该明白，其实也是这个Factory捣的鬼，所以对应于需要继承`FragmentActivity`，我们这时候就需要去看一下`FragmentActivity`的源码。通过继承关系我们会发现最终在父类`Activity`实现了`Factory2`接口。
-![继承关系](https://upload-images.jianshu.io/upload_images/7866586-8883b5bad2ddbe89.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![继承关系](/assets/img/posts/b2f313f368182e55.png)
 
 ```
 final FragmentController mFragments = FragmentController.createController(new HostCallbacks());

@@ -1,5 +1,5 @@
 ---
-title: "【Window系列】——Dialog源码解析"
+title: 【Window系列】——Dialog源码解析
 date: 2019-06-29 15:27:12+08:00
 categories: ["Android源码分析"]
 source_name: "【Window系列】——Dialog源码解析"
@@ -284,7 +284,7 @@ protected AlertController(Context context, DialogInterface di, Window window) {
 ```
 这里可以看到`mAlertDialogLayout`对象是在`AlertController`构造函数时通过读取属性参数，而默认的布局文件是`R.layout.alert_dialog`。
 这里简单的看一下这个布局的布局结构，可以看到和我们设置的属性基本是相同。
-![dialog_layout.png](https://upload-images.jianshu.io/upload_images/7866586-01034f87cded3307.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![dialog_layout.png](/assets/img/posts/dd451327365d91f8.png)
 最后看一下`setupView()`
 ```
 private void setupView() {

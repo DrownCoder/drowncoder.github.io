@@ -1,5 +1,5 @@
 ---
-title: "系列目录"
+title: 【Gradle深入浅出】——Gradle基础概念
 date: 2020-11-29 23:34:31+08:00
 categories: ["Android源码分析"]
 source_name: "【Gradle深入浅出】——Gradle基础概念"
@@ -20,7 +20,7 @@ Gradle中的所有内容都基于两个基本概念：project和task
 Gradle 是通过组织一系列 task 来最终完成自动化构建的，所以 task 是 Gradle 里最重要的概念
 我们以生成一个可用的 apk 为例，整个过程要经过 资源的处理，javac 编译，dex 打包，apk 打包，签名等等步骤，每个步骤就对应到 gradle 里的一个 task
 gradle 可以类比做一条流水线，task 可以比作流水线上的机器人，每个机器人负责不同的事情，最终生成完整的构建产物。
-![流水线](https://upload-images.jianshu.io/upload_images/7866586-9fded48e8dadb45e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![流水线](/assets/img/posts/09dae671b45a88ee.png)
 
 而Gradle的代码实质是配置脚本，执行一种类型的配置脚本时就会创建一个关联的对象。
 Gradle的三种主要对象解释如下：

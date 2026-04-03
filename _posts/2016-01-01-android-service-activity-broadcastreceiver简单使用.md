@@ -1,5 +1,5 @@
 ---
-title: "Android-Service、Activity、BroadcastReceiver简单使用"
+title: "Android Service、Activity、BroadcastReceiver简单使用"
 date: 2017-09-26 00:27:59+08:00
 categories: ["Android基础"]
 source_name: "Android-Service、Activity、BroadcastReceiver简单使用"

@@ -1,5 +1,5 @@
 ---
-title: "背景"
+title: IconFontPreview——一款预览IconFont的插件
 date: 2019-02-25 23:38:21+08:00
 categories: ["Android开源项目"]
 source_name: "IconFontPreview——一款预览IconFont的插件"
@@ -23,13 +23,13 @@ jianshu_url: "https://www.jianshu.com/p/369a7b251729"
 [IconFontPreview.zip](https://github.com/DrownCoder/IconFontPreview/blob/master/IconFontPreview.zip)
 ### 使用步骤
 ##### 1.安装完插件后,在操作面板会生成一个草帽的Icon，点击操作面版的草帽icon(ONE PIECE)
-![step1](https://upload-images.jianshu.io/upload_images/7866586-94afdf6f1cc117ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![step1](/assets/img/posts/a3142f7b89791d8b.png)
 ##### 2.第一次需要设置工程下ttf字体文件路径和定义iconfont的string.xml路径
-![step2.jpg](https://upload-images.jianshu.io/upload_images/7866586-0ba179c2588835f6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![step2.jpg](/assets/img/posts/ec35220d4c2e2ba3.jpg)
 
 这一步只会在第一次才会使用，因为本地会有缓存，后面的会读取缓存的目录（根目录下的PlugCache）
 ##### 3.点击确定后或者以后在点击草帽就会在浏览器中打开预览定义的IconFont图标了
-![ONE PIECE](https://upload-images.jianshu.io/upload_images/7866586-b58b9e8dd4578db1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![ONE PIECE](/assets/img/posts/2a1bec92213506d7.png)
 ##### 4.后面再使用就可以直接点击操作面板的草帽Icon就会直接弹出预览页面了
 ### 实现原理
 #### 1.IntelliJ插件开发

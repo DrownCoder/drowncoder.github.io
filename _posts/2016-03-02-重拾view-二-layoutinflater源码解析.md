@@ -1,5 +1,5 @@
 ---
-title: "【重拾View(二)】——LayoutInflater源码解析"
+title: 【重拾View(二)】——LayoutInflater源码解析
 date: 2018-10-13 14:56:13+08:00
 categories: ["Android源码分析"]
 source_name: "【重拾View(二)】——LayoutInflater源码解析"

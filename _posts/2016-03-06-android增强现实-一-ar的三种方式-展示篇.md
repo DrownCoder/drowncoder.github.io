@@ -1,5 +1,5 @@
 ---
-title: "Android增强现实（一）-AR的三种方式(展示篇)"
+title: Android增强现实（一）-AR的三种方式(展示篇)
 date: 2017-12-27 21:20:02+08:00
 categories: ["Android自定义View"]
 source_name: "Android增强现实（一）-AR的三种方式(展示篇)"
@@ -38,10 +38,10 @@ Step 2. Add the dependency
 	}
 ### 1.全景360°GIF图
 大家应该在京东和淘宝上见过这种效果吧：
-![京东 ](http://upload-images.jianshu.io/upload_images/7866586-3e60f0d9040c9e28.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![京东 ](/assets/img/posts/0e0f7be4985a3cfe.gif)
 
 **我的实现效果图：**
-![VrGifView](http://upload-images.jianshu.io/upload_images/7866586-ef7c6eb4e2392371.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![VrGifView](/assets/img/posts/14b95dd7008dccb2.gif)
 
 **功能：**
 >1.支持单指拖拽
@@ -77,10 +77,10 @@ public class GifActivity extends AppCompatActivity {
 
 ### 2.展示3D模型
 在京东上见到过这样效果的商品：
-![京东3D](http://upload-images.jianshu.io/upload_images/7866586-39948650ce4759f4.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![京东3D](/assets/img/posts/d3b7eb245192cb80.gif)
 **我的实现效果图：**
 
-![3D模型](http://upload-images.jianshu.io/upload_images/7866586-d5490c38cdcd32b1.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![3D模型](/assets/img/posts/4cdf35b118f6fbd1.gif)
 
 
 **功能：**

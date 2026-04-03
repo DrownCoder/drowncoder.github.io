@@ -113,6 +113,7 @@ def sync() -> tuple[int, int]:
 
         matched += 1
         lines = [line for line in lines if not line.startswith("jianshu_url:") and not line.startswith("jianshu_views:")]
+        lines = set_front_matter_value(lines, "title", item["title"])
         lines = set_front_matter_value(lines, "date", item["date"])
         lines.append(f'jianshu_views: {item["views"]}')
         lines.append(f'jianshu_url: "{item["url"]}"')

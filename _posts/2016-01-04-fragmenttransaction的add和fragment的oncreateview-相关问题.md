@@ -16,15 +16,15 @@ jianshu_url: "https://www.jianshu.com/p/6f52abc088df"
 1.出现了上面的问题我第一个想法是是不是由于Fragment被remove后被销毁了，导致再add()，由于Fragment是null所以不能显示。
 但是经过调试，我发现remove后指向Fragment的变量并不是null,这个时候我就纠结了，不是被销毁了吗，怎么不为null,所以我开始怀疑是不是没有被销毁。
 但是，经过调试，我对Fragment重写了所有生命周期的方法，并且通过Tag进行显示下面是显示的图片
-![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-f52342c7428d238b?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
+![这里写图片描述](/assets/img/posts/35fc40bb2bd3f473.webp)  
 可以看出，remove后Fragment确实执行了onDetach，也就是说这个Fragment的生命周期已经结束了，但是调试结果是这个Fragment确实不是为空，我就上论坛提问，几位大神的回答让我明白了这些
-![](http://upload-images.jianshu.io/upload_images/7866586-7771f722b3a5d95a?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](/assets/img/posts/2c53baea736b5194.webp)
 没错，就像他们回答的一样，remove只是将和Activity解绑了，
-![](http://upload-images.jianshu.io/upload_images/7866586-1f38f7dab09706e4?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](/assets/img/posts/44f9464bf62f9bd5.webp)
 可以看到解绑后，这个Fragment的mActivity为null。所以这个想法就是错的。
 2.第一个想法是错的，我就继续改，发现如果，frag1remove()再add()确实不显示，但是，如果从另一个frag2跳转到frag1,同样是执行的add()方法，这样就显示了，这我就更纠结了，同样的frag1,并没有操作修改他，同样的add()方法，怎么一个能显示，一个不能显示了哪？！
 从这里想，我就开始找不同，也就是找变的因素，首先我对生命周期的方法进行了调试发现frag1在两次add()后都执行了
-![这个是remove后立马add的frag的生命周期](http://upload-images.jianshu.io/upload_images/7866586-1eb5ec1ec53ab667?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![这个是remove后立马add的frag的生命周期](/assets/img/posts/6aadd3738cf72f50.webp)
 而第二种能显示的frag1也同样执行到了onResume，所以这样这期间Frag1并没有什么区别，但是无数次断点调试，无意间我发现了一个巨大的区别，**那就是在调用**
 **onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState)** **这个方法时，第一种不显示的情况container是null，而第二种container为FrameLayout。**
 

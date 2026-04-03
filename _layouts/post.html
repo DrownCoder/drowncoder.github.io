@@ -77,12 +77,10 @@ script_includes:
         </span>
 
         <div>
-          {% if page.jianshu_views %}
-            <span>
-              <em>{{ page.jianshu_views }}</em>
-              简书阅读
-            </span>
-          {% endif %}
+          <span>
+            <em id="pageviews" data-baseviews="{{ page.jianshu_views | default: 0 }}">{{ page.jianshu_views | default: 0 }}</em>
+            阅读量
+          </span>
 
           {% include read-time.html content=content prompt=true lang=lang %}
         </div>

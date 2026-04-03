@@ -11,12 +11,13 @@
     const container = document.getElementById('busuanzi_container_page_pv');
 
     if (!output || !source || !container) return;
+    const base = Number(output.dataset.baseviews || '0');
 
     const syncViews = () => {
       const raw = source.textContent.trim();
 
       if (raw) {
-        output.innerText = new Intl.NumberFormat().format(Number(raw));
+        output.innerText = new Intl.NumberFormat().format(base + Number(raw));
         container.hidden = true;
         return true;
       }

@@ -1,5 +1,5 @@
 ---
-title: "【进阶】RecyclerView源码解析(四)——RecyclerView进阶优化使用"
+title: 【进阶】RecyclerView源码解析(四)——RecyclerView进阶优化使用
 date: 2018-04-24 21:33:19+08:00
 categories: ["Android源码分析"]
 source_name: "【进阶】RecyclerView源码解析(四)——RecyclerView进阶优化使用"
@@ -108,15 +108,15 @@ Demo是上一篇[博客](https://www.jianshu.com/p/2b19e9bcda84)的拓展,一个
 
 首先我们来看一下没有设置RecyclerPool之前  
 **3.1 没有设置RecyclerPool**  
-![第一个ChildRecyclerView](https://upload-images.jianshu.io/upload_images/7866586-4113e8e190e06992.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![第一个ChildRecyclerView](/assets/img/posts/79280022fc1b6cc8.png)
 可以看到，刚进入的时候，这时只有一个横向的ChildRecyclerView,从面板可以看到这时第一个ChildRecyclerView:new了三个ImageViewHolder。  
 这时我们向下滑动展示出第二个横向的ChildRecyclerView。
-![第二个ChildRecyclerView](https://upload-images.jianshu.io/upload_images/7866586-28bd365dfebd1ab9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![第二个ChildRecyclerView](/assets/img/posts/c16bf8816f9ae722.png)
 可以看到，这时第二个横向的ChildRecyclerView滑入的时候，从面板可以看到，从刚才的new了三个的ImageViewHolder又new了三个ImageViewHolder。
 **3.2 设置RecyclerPool**  
-![第一个ChildRecyclerView](https://upload-images.jianshu.io/upload_images/7866586-2852260d1b196ba6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![第一个ChildRecyclerView](/assets/img/posts/d0f24238f9c813c5.png)
 可以看到，这时候没有什么特殊的变化，由于只有一个横向的ChildRecyclerView，所以仍然只是new了三个ImageViewHolder。  
-![第二个ChildRecyclerView](https://upload-images.jianshu.io/upload_images/7866586-0049e05aafd34a1d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![第二个ChildRecyclerView](/assets/img/posts/2a071a0b110a0402.png)
 这时候就可以清除的看到啊设置完RecyclerViewPool的变化了，可以发现第二个ChildRecyclerView滑入后，没有new任何新的ImageViewHolder，也就是说第二个ChildRecyclerView复用了第一个ChildRecyclerView的new出来的三个ImageViewHolder。**也就是说这时内存里只存在三个ImageViewHolder。**这样就节省了创建3个ImageViewHolder的时间。
 
 #### 四.对于大量图片的RecyclerView考虑重写onScroll事件，滑动暂停后再加载
@@ -127,7 +127,7 @@ Demo是上一篇[博客](https://www.jianshu.com/p/2b19e9bcda84)的拓展,一个
 
 #### 六.不要什么都用notifydatasetchange!!!!
 这个其实每个人都熟知，但是往往都不遵循，RecyclerView和ListView的一个显著区别就是RecyclerView提供了多种刷新类型，**不像ListView每次刷新都需要重新Bind界面内都所有都View。**RecyclerView通过给每个ViewHolder设置标志位来判断需要刷新的ViewHolder。具体原理如下图：(图片来源：多次提到的[Bugly博客](https://segmentfault.com/a/1190000007331249)～～)  
-![RecyclerView刷新机制](https://upload-images.jianshu.io/upload_images/7866586-7b3aacfc146df383.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![RecyclerView刷新机制](/assets/img/posts/72e70774704690a9.png)
 **6.1 Demo验证**
 ```
     case R.id.delete:
@@ -138,10 +138,10 @@ Demo是上一篇[博客](https://www.jianshu.com/p/2b19e9bcda84)的拓展,一个
                 mAdapter.notifyDataSetChanged();
 ```
 Demo很简单，就是点击删除后，移除第一个Item。  
-![刚进入](https://upload-images.jianshu.io/upload_images/7866586-2ee6ccfdee09564d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-![notifyDataSetChanged](https://upload-images.jianshu.io/upload_images/7866586-6c96ca860cb91891.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![刚进入](/assets/img/posts/732206fed2414e4c.png)
+![notifyDataSetChanged](/assets/img/posts/fb911c9ab92bc135.png)
 可以看到，当我们仅仅是删除了第一项或者某一项，调用了```notifyDataSetChanged```方法，会导致整个页面范围内的ViewHolder重新调用onBindViewHolder方法，这样就重复做了一次Bind操作。这时我们换用```notifyItemRemoved```方法。
-![notifyItemRemoved](https://upload-images.jianshu.io/upload_images/7866586-cf6aab8a5b042828.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![notifyItemRemoved](/assets/img/posts/28a5ab4c7a89e7f1.png)
 可以看到，这时只会由于第一个移除，导致新的一个`position=8`进入并展示，所以只有`position=8`调用了onBindViewHodler方法，而其他的已经绑定的ViewHolder不需要重新绑定。
 #### 七.减少每个ItemView的层级嵌套
 这就是老生常谈的优化了。

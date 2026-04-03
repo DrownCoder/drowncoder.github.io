@@ -1,5 +1,5 @@
 ---
-title: "关于ImageView的源码简单解析"
+title: 关于ImageView的源码简单解析
 date: 2017-09-26 00:30:12+08:00
 categories: ["Android源码分析"]
 source_name: "关于ImageView的源码简单解析"

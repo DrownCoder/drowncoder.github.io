@@ -1,5 +1,5 @@
 ---
-title: "【JetPack系列】——LiveData源码解析"
+title: 【JetPack系列】——LiveData源码解析
 date: 2020-08-02 19:29:54+08:00
 categories: ["Android源码分析"]
 source_name: "【JetPack系列】——LiveData源码解析"
@@ -249,7 +249,7 @@ void dispatchingValue(@Nullable ObserverWrapper initiator) {
     }
 ```
 其次这里可以看到传入的参数是否为null也是有差异的，但最终执行的都是`considerNotify`方法，从代码可以看出来，如果传入的不为null，则只是单纯刷新一个观察者，如果传入的为null，则遍历所有的观察者进行刷新。那么我们来看下有哪些地方调用了这个方法。
-![引用](https://upload-images.jianshu.io/upload_images/7866586-d3e1fa85ba08d951.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![引用](/assets/img/posts/4b0c08d201101e44.png)
 
 可以看到刚好有两处，一个传入的是this，一个传入的是null对象。
 ```

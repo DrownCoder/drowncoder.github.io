@@ -1,5 +1,5 @@
 ---
-title: "【进阶】RecyclerView源码解析(一)——绘制流程"
+title: 【进阶】RecyclerView源码解析(一)——绘制流程
 date: 2018-03-13 21:27:36+08:00
 categories: ["Android源码分析"]
 source_name: "【进阶】RecyclerView源码解析(一)——绘制流程"
@@ -329,7 +329,7 @@ mAnchorInfo.mLayoutFromEnd = mShouldReverseLayout ^ mStackFromEnd;
 2.fill()
 第一个方法其实就是确定当前方向上锚点的相关的状态信息。
 这里最主要的就是第二个方法**fill()**,可以看到**这里至少调用了两次fill()方法，当还有剩余可以绘制的时候会再调一次fill()方法**。这也证明了我们的想法，是通过锚点分别向上和向下两次绘制。这里放上一张图便于理解
-![测量流程](https://upload-images.jianshu.io/upload_images/7866586-cbcc8d6019a4c6c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![测量流程](/assets/img/posts/feda64f1081ee141.png)
 
 
 ```
@@ -492,7 +492,7 @@ Rect getItemDecorInsetsForChild(View child) {
 ```
 其实可以看到这里在测量子View的时候是将我们实现自定义分割线重写的getItemOffsets方法。这里其实也就可以理解了自定义分割线的原理就是在子View的测量过程前给上下左右加上自定义分割线所对应设置给这个child的边距。
 测量完成后，紧接着就调用了layoutDecoratedWithMargins(view, left, top, right, bottom)对子View完成了layout。
-![分割线](https://upload-images.jianshu.io/upload_images/7866586-1e7be4fe57c27c65.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![分割线](/assets/img/posts/e024b1d1ec13d7c2.png)
 
 ```
 public void layoutDecoratedWithMargins(View child, int left, int top, int right,

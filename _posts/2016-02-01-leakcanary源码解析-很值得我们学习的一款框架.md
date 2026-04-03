@@ -1,5 +1,5 @@
 ---
-title: "前言"
+title: LeakCanary源码解析-很值得我们学习的一款框架
 date: 2018-08-17 00:11:51+08:00
 categories: ["Android源码分析"]
 source_name: "LeakCanary源码解析-很值得我们学习的一款框架"
@@ -8,7 +8,7 @@ jianshu_url: "https://www.jianshu.com/p/02614aa6162e"
 ---
 一直在使用这个框架，但是一直没有注意这个框架的实现原理。使用过这款框架的人应该都知道，LeakCanary是一款能够帮助开发者检查内存泄漏的开源库，只需要简单配置，就可以当使用过程中产生内存泄漏时，弹出通知，并且可以我们可以查看详细的引用链，帮助我们进行内存泄漏的分析。
 ### 项目预览
-![项目结构](https://upload-images.jianshu.io/upload_images/7866586-49925d220822a5e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![项目结构](/assets/img/posts/8185237052548c00.png)
 这里专门放了一张LeakCanary的项目的目录结构，可以看到，LeakCanary的项目目录还是很考究的，总体分为了5个模块，每个都专门负责一个功能。
 >1.analyzer 内存泄漏分析功能模块，内存泄漏的路径分析就是该模块，**haha库**就是在该模块中使用
 >2.watcher 内存泄漏监控模块，监控并且发现内存泄漏的就是该模块

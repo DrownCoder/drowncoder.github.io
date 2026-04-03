@@ -1,5 +1,5 @@
 ---
-title: "【进阶】RecyclerView源码解析(二)——缓存机制"
+title: 【进阶】RecyclerView源码解析(二)——缓存机制
 date: 2018-04-02 21:00:48+08:00
 categories: ["Android源码分析"]
 source_name: "【进阶】RecyclerView源码解析(二)——缓存机制"
@@ -18,7 +18,7 @@ jianshu_url: "https://www.jianshu.com/p/e44961f8add5"
 无论是原来使用的ListView还是RecyclerView，列表类型的视图一直是原生使用的一个重头戏。无论是从使用功能上还是性能上，原生的列表视图都有着巨大的优势，而这个优势很重要的一方面其实就是对于视图的复用机制，也就是**缓存**。从ListView的**RecycleBin**到RecyclerView的**Recycler**，Google对于列表视图的缓存的设计一直非常考究值得我们学习和研究。而网页的H5和火热的RN对于复杂的列表视图的渲染性能不好从这里面其实也可以寻找到一些原因。
 ### 总流程图
 放上一张[Bugly的一篇博客](https://segmentfault.com/a/1190000007331249)对RecyclerView的缓存的流程图吧（自己画发现差不多就直接挪过来了...若侵立删）
-![总流程](https://upload-images.jianshu.io/upload_images/7866586-7fbcb32f540a47be.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![总流程](/assets/img/posts/3076e433cdaf8f66.jpg)
 
 ### 源码分析
 如果看过上一篇博客的人应该还记得我们当中提到了和缓存机制有关的那个函数。
@@ -295,7 +295,7 @@ ViewHolder getScrapOrHiddenOrCachedHolderForPosition(int position, boolean dryRu
 * 2.从HiddenView中获取
 * 3.从CacheView获取
 关键的代码注释我已经放上了，流程上可以用下面这个图来理解：
-![第一次判断](https://upload-images.jianshu.io/upload_images/7866586-cdb89f4a27002508.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![第一次判断](/assets/img/posts/70f5cb6bd947681d.png)
 
 
 ####  第二次尝试(对应hasStablelds情况)
@@ -380,7 +380,7 @@ ViewHolder getScrapOrCachedViewForId(long id, int type, boolean dryRun) {
     }
 ```
 可以看到这里的判断其实和上面那一次差不多，需要注意的是**多了对于id的判断和对于type的判断**，也就是当我们将hasStableIds()设为true后需要重写holder.getItemId() 方法，来为每一个item设置一个单独的id。具体流程图如下：
-![第二次判断](https://upload-images.jianshu.io/upload_images/7866586-a325e2cb54705dec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![第二次判断](/assets/img/posts/fad46612984f6b4e.png)
 
 ####  第三次尝试(对应于自定义缓存)
 其实这种对于我们平常的使用来说已经很陌生了，甚至很多人都不知道RecyclerView的这一项特性。

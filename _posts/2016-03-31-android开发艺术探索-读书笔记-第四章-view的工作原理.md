@@ -1,5 +1,5 @@
 ---
-title: "第四章 View的工作原理"
+title: "《Android开发艺术探索》读书笔记-第四章 View的工作原理"
 date: 2017-09-26 00:26:24+08:00
 categories: ["读书笔记"]
 source_name: "《Android开发艺术探索》读书笔记-第四章-View的工作原理"

@@ -1,12 +1,12 @@
 ---
-title: "AutoFitTextView-根据文本内容自动调整字体大小的TextView"
+title: AutoFitTextView-根据文本内容自动调整字体大小的TextView
 date: 2017-09-26 00:28:51+08:00
 categories: ["Android自定义View"]
 source_name: "AutoFitTextView-根据文本内容自动调整字体大小的TextView"
 jianshu_views: 1422
 jianshu_url: "https://www.jianshu.com/p/d51df08a061c"
 ---
-![效果](http://upload-images.jianshu.io/upload_images/7866586-e3af0017c5ca3ef2?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![效果](/assets/img/posts/631e4b3fbaafd30d.webp)
 上次完成的[仿网易新闻标签选择器（可拖动）-TabMoveLayout](http://blog.csdn.net/sdfdzx/article/details/70230959)有个问题，那就是因为标签的宽度是固定的，当标签文字过长的时候，就会显示不全，网易新闻的处理方法是缩小字体使得标签可以包容下文字。所以就对应将这种方式实现了出来。
 #### 实现思路：
 因为宽度是固定的，而TextView的实现方式其实是通过Paint绘制的，所以我们可以通过width=paint.measureText()和TextView的实际宽度比较，当循环width<=实际宽度的时候的字号则是合适的字号，不合适则将字号-1。

@@ -1,5 +1,5 @@
 ---
-title: "出现情形："
+title: "《HeadFrist 设计模式》读书笔记 —— 策略模式"
 date: 2017-09-26 00:26:34+08:00
 categories: ["读书笔记"]
 source_name: "《HeadFrist-设计模式》读书笔记-——-策略模式"
@@ -20,7 +20,7 @@ jianshu_url: "https://www.jianshu.com/p/5c54ab6d06f4"
 子类需要重复实现接口方法。（1000个子类都需要实现一遍fly（）方法，但是fly仅仅fly。。）
 
 ### 类图：
-![这里写图片描述](http://upload-images.jianshu.io/upload_images/7866586-ab29e373c95e00f6?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![这里写图片描述](/assets/img/posts/9bc4912aabd7cd94.webp)
 可以看到，对于易变的fly和quack行为，抽出来以接口的形式定义，不同的fly方式和quack方式实现接口里的fly方法和quack方法，而Duck对象以组合的形式持有FlyBehavior和QuackBehavior接口，分别在performFly方法和performQuack方法中调用FlyBehavior.fly和QuackBehavior.quack方法。这样在不同的Duck类型中，可以动态的设置不同的fly和quack类型，但是调用的都是同样的performFly和performQuack方法。
 
 ### 代码实现：
