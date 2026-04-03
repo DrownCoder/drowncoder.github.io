@@ -1,8 +1,10 @@
 ---
 title: "【重拾Handler】——postDelayed原理你真的了解吗？"
-date: 2016-02-28 08:00:00 +0800
+date: 2019-01-05 15:05:50+08:00
 categories: ["Android源码分析"]
 source_name: "【重拾Handler】——postDelayed原理你真的了解吗？"
+jianshu_views: 7249
+jianshu_url: "https://www.jianshu.com/p/f5136d8e0740"
 ---
 >Handler已经算是一个老生常谈的知识点，但是最近在回顾的源码的时候，发现Handler其实远不止当初看源码想象的那么简单。
 ### 前言

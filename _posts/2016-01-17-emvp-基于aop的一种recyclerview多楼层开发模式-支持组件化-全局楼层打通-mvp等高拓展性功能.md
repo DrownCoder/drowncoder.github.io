@@ -1,8 +1,10 @@
 ---
 title: "前言"
-date: 2016-01-17 08:00:00 +0800
+date: 2018-11-14 21:14:52+08:00
 categories: ["Android开源项目"]
 source_name: "EMvp-基于AOP的一种RecyclerView多楼层开发模式，支持组件化，全局楼层打通，MVP等高拓展性功能"
+jianshu_views: 3268
+jianshu_url: "https://www.jianshu.com/p/f45e4bcb8d92"
 ---
 RecyclerView作为Google替代ListView的一个组件，其强大的拓展性和性能，现在已经成为无数App核心页面的主体框架。RecyclerView的开发模式一般来说都是多Type类型的ViewHolder——后面就称为楼层(感觉很形象)。但是使用多了，许多问题就暴露出来了，经常考虑有这么几个问题：  
 

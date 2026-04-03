@@ -1,8 +1,10 @@
 ---
 title: "FragmentTransaction的add和Fragment的onCreateView()相关问题"
-date: 2016-01-04 08:00:00 +0800
+date: 2017-09-26 00:28:33+08:00
 categories: ["Android基础"]
 source_name: "FragmentTransaction的add和Fragment的onCreateView()相关问题"
+jianshu_views: 2530
+jianshu_url: "https://www.jianshu.com/p/6f52abc088df"
 ---
 接着上一篇的博客遗留的问题，我查了许多资料，看了许多源码，终于经过三天的努力理解了这个问题。
 

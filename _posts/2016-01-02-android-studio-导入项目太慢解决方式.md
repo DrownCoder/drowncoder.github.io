@@ -1,8 +1,10 @@
 ---
 title: "Android-Studio-导入项目太慢解决方式"
-date: 2016-01-02 08:00:00 +0800
+date: 2017-09-26 00:28:06+08:00
 categories: ["Android基础"]
 source_name: "Android-Studio-导入项目太慢解决方式"
+jianshu_views: 722
+jianshu_url: "https://www.jianshu.com/p/bf8cb51cb6b2"
 ---
 android studio 导入项目太慢解决方式
 =======

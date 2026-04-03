@@ -1,8 +1,10 @@
 ---
 title: "第四章 View的工作原理"
-date: 2016-03-31 08:00:00 +0800
+date: 2017-09-26 00:26:24+08:00
 categories: ["读书笔记"]
 source_name: "《Android开发艺术探索》读书笔记-第四章-View的工作原理"
+jianshu_views: 204
+jianshu_url: "https://www.jianshu.com/p/0bb55c161a92"
 ---
 ## 4.1初识ViewRoot和DecorView
 1)ViewRoot对应ViewRootImpl类，View的绘制流程是从ViewRoot的performTraversals方法开始的，performTraversals会依次调用performMeasure、performLayout、performDraw方法，三个方法分别完成View的measure、layout、draw方法。

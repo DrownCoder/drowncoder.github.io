@@ -1,8 +1,10 @@
 ---
 title: "关于ImageView的源码简单解析"
-date: 2016-03-04 08:00:00 +0800
+date: 2017-09-26 00:30:12+08:00
 categories: ["Android源码分析"]
 source_name: "关于ImageView的源码简单解析"
+jianshu_views: 591
+jianshu_url: "https://www.jianshu.com/p/8105e799fd85"
 ---
 今天在设置ImageView的图片时无意遇到一些问题，区分了一下设置background和src的区别，顺便看了一下View的setBackgroundDrawable源码(ImageView继承View调用的是View的方法)。将理解的简单总结一下，以便下一次接着看~
 源码：

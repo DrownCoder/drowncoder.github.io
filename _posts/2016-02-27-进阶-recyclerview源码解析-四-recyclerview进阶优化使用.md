@@ -1,8 +1,10 @@
 ---
 title: "【进阶】RecyclerView源码解析(四)——RecyclerView进阶优化使用"
-date: 2016-02-27 08:00:00 +0800
+date: 2018-04-24 21:33:19+08:00
 categories: ["Android源码分析"]
 source_name: "【进阶】RecyclerView源码解析(四)——RecyclerView进阶优化使用"
+jianshu_views: 9192
+jianshu_url: "https://www.jianshu.com/p/52791ac320f6"
 ---
 >本系列博客基于`com.android.support:recyclerview-v7:26.1.0`
 >1.[【进阶】RecyclerView源码解析(一)——绘制流程](https://www.jianshu.com/p/c52b947fe064)

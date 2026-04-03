@@ -1,8 +1,10 @@
 ---
 title: "【进阶】RecyclerView源码解析(一)——绘制流程"
-date: 2016-02-24 08:00:00 +0800
+date: 2018-03-13 21:27:36+08:00
 categories: ["Android源码分析"]
 source_name: "【进阶】RecyclerView源码解析(一)——绘制流程"
+jianshu_views: 32743
+jianshu_url: "https://www.jianshu.com/p/c52b947fe064"
 ---
 >本系列博客基于`com.android.support:recyclerview-v7:26.1.0`
 >1.[【进阶】RecyclerView源码解析(一)——绘制流程](https://www.jianshu.com/p/c52b947fe064)

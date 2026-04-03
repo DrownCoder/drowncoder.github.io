@@ -1,8 +1,10 @@
 ---
 title: "第一章 Activity的生命周期和启动模式"
-date: 2016-03-28 08:00:00 +0800
+date: 2017-09-26 00:25:49+08:00
 categories: ["读书笔记"]
 source_name: "《Android开发艺术探索》读书笔记-第一章-Activity的生命周期和启动模式"
+jianshu_views: 364
+jianshu_url: "https://www.jianshu.com/p/7e0b489b65a5"
 ---
 ## 1.1.1典型情况下的生命周期分析
 1)Activity的生命周期：

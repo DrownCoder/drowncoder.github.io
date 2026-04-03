@@ -1,8 +1,10 @@
 ---
 title: "【Window系列】——Dialog源码解析"
-date: 2016-02-20 08:00:00 +0800
+date: 2019-06-29 15:27:12+08:00
 categories: ["Android源码分析"]
 source_name: "【Window系列】——Dialog源码解析"
+jianshu_views: 1483
+jianshu_url: "https://www.jianshu.com/p/7874bfb20ca0"
 ---
 >本系列博客基于android-28版本
 [【Window系列】——Toast源码解析](https://www.jianshu.com/p/f9e60e9272cf)

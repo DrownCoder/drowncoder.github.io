@@ -1,8 +1,10 @@
 ---
 title: "【JetPack系列】——LiveData源码解析"
-date: 2016-02-18 08:00:00 +0800
+date: 2020-08-02 19:29:54+08:00
 categories: ["Android源码分析"]
 source_name: "【JetPack系列】——LiveData源码解析"
+jianshu_views: 1220
+jianshu_url: "https://www.jianshu.com/p/b047bcfb2a04"
 ---
 >本系列博客基于androidx-2.2.0版本
 [【JetPack系列】——Lifecycle源码分析](https://www.jianshu.com/p/175a2138f5e2)

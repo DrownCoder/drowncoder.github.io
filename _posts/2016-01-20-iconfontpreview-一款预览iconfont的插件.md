@@ -1,8 +1,10 @@
 ---
 title: "背景"
-date: 2016-01-20 08:00:00 +0800
+date: 2019-02-25 23:38:21+08:00
 categories: ["Android开源项目"]
 source_name: "IconFontPreview——一款预览IconFont的插件"
+jianshu_views: 4419
+jianshu_url: "https://www.jianshu.com/p/369a7b251729"
 ---
 使用过IconFont的应该都深有体会，每次使用IconFont的时候，由于不知道Unicode和Icon的对应关系，每次都要到对应的文件夹下找到默认生成的html文件，打开后才能寻找到我们需要的IconFont。而每次找文件这个过程真的很麻烦，而且当公司IconFont的版本更新的时候，这个路径也会相应改变，那就更痛苦了。
 为了解决这个问题，我就考虑能不能做一款预览IconFont的插件，避免这种痛苦的寻找文件过程，提高开发效率。

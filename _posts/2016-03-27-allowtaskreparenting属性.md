@@ -1,8 +1,10 @@
 ---
 title: "allowTaskReparenting属性"
-date: 2016-03-27 08:00:00 +0800
+date: 2017-09-26 00:25:17+08:00
 categories: ["读书笔记"]
 source_name: "allowTaskReparenting属性"
+jianshu_views: 792
+jianshu_url: "https://www.jianshu.com/p/de241ed4f4c8"
 ---
 最近看到了TaskAffinity和allowTaskReparenting配个使用，就写了个Demo,测试了一下
 情景：

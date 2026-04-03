@@ -1,8 +1,10 @@
 ---
 title: "MediaPlayer源码存在的内存泄漏问题，释放资源的正确方式"
-date: 2016-02-02 08:00:00 +0800
+date: 2017-09-26 00:30:36+08:00
 categories: ["Android源码分析"]
 source_name: "MediaPlayer源码存在的内存泄漏问题，释放资源的正确方式"
+jianshu_views: 6856
+jianshu_url: "https://www.jianshu.com/p/77a0bd4690bd"
 ---
 最近完成了一个联网的视频播放器Demo，闲来无聊，尝试了一下LeakCanary，一款Android查看内存泄漏的工具。使用方式
 

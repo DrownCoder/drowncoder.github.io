@@ -1,8 +1,10 @@
 ---
 title: "第二章 IPC机制"
-date: 2016-03-30 08:00:00 +0800
+date: 2017-09-26 00:26:01+08:00
 categories: ["读书笔记"]
 source_name: "《Android开发艺术探索》读书笔记-第二章-IPC机制（未啃透）"
+jianshu_views: 247
+jianshu_url: "https://www.jianshu.com/p/5b798a779133"
 ---
 ## 2.2 Android中的多进程模式
 ### 2.2.1 开启多进程模式

@@ -1,8 +1,10 @@
 ---
 title: "【重拾View(三)】——LayoutInflater中Factory源码解析"
-date: 2016-03-01 08:00:00 +0800
+date: 2018-11-04 15:24:24+08:00
 categories: ["Android源码分析"]
 source_name: "【重拾View(三)】——LayoutInflater中Factory源码解析"
+jianshu_views: 877
+jianshu_url: "https://www.jianshu.com/p/281d87f17c66"
 ---
 >1.[【重拾View(一)】——setContentView()源码解析](https://www.jianshu.com/p/9e1cf127f0ae)
 >2.[【重拾View(二)】——LayoutInflater源码解析](https://www.jianshu.com/p/86696bda40f3)

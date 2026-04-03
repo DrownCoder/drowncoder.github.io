@@ -1,8 +1,10 @@
 ---
 title: "ImageLoader加载本地图片的实现————防OOM"
-date: 2016-01-05 08:00:00 +0800
+date: 2017-09-26 00:30:54+08:00
 categories: ["Android基础"]
 source_name: "ImageLoader加载本地图片的实现————防OOM"
+jianshu_views: 866
+jianshu_url: "https://www.jianshu.com/p/93c69782357a"
 ---
 这段时间，项目功能做完了，但是一直被OOM的问题困扰，在同样的代码在模拟机上可以运行，但在真机上却无法运行，报OOM，于是，最近开始接触关于OOM的相关问题，今天先总结一下关于ImageLoader的实现。
 **实现ImageLoader主要用到了下面几个知识点：**

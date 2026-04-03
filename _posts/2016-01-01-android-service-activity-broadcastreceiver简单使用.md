@@ -1,8 +1,10 @@
 ---
 title: "Android-Service、Activity、BroadcastReceiver简单使用"
-date: 2016-01-01 08:00:00 +0800
+date: 2017-09-26 00:27:59+08:00
 categories: ["Android基础"]
 source_name: "Android-Service、Activity、BroadcastReceiver简单使用"
+jianshu_views: 889
+jianshu_url: "https://www.jianshu.com/p/42b450f47e08"
 ---
 最近在项目要用到一个**:提交->审核->审核通过**流程。
 对应的我就想到要使用Activity与Service通过BroadcastReceiver的简单通信，完成后简单总结一下。

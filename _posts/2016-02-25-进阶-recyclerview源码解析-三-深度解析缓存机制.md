@@ -1,8 +1,10 @@
 ---
 title: "【进阶】RecyclerView源码解析(三)——深度解析缓存机制"
-date: 2016-02-25 08:00:00 +0800
+date: 2018-04-17 21:12:20+08:00
 categories: ["Android源码分析"]
 source_name: "【进阶】RecyclerView源码解析(三)——深度解析缓存机制"
+jianshu_views: 12490
+jianshu_url: "https://www.jianshu.com/p/2b19e9bcda84"
 ---
 >本系列博客基于`com.android.support:recyclerview-v7:26.1.0`
 >1.[【进阶】RecyclerView源码解析(一)——绘制流程](https://www.jianshu.com/p/c52b947fe064)

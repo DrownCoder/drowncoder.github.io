@@ -1,8 +1,10 @@
 ---
 title: "第三章 View的事件体系"
-date: 2016-03-29 08:00:00 +0800
+date: 2017-09-26 00:26:13+08:00
 categories: ["读书笔记"]
 source_name: "《Android开发艺术探索》读书笔记-第三章-View的事件体系"
+jianshu_views: 270
+jianshu_url: "https://www.jianshu.com/p/734d48fdcd26"
 ---
 ##3.1 View的基础知识
 ###3.1.2 View的位置参数

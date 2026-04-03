@@ -1,8 +1,10 @@
 ---
 title: "自定义评分条（实现方式一）-CustomRatingBar"
-date: 2016-03-17 08:00:00 +0800
+date: 2017-09-26 00:28:40+08:00
 categories: ["Android自定义View"]
 source_name: "自定义评分条（实现方式一）-CustomRatingBar"
+jianshu_views: 895
+jianshu_url: "https://www.jianshu.com/p/ebbbf3e95f2e"
 ---
 Android原生的RatingBar是一个评分组件，但是局限性比较多，像星星大小不好调整，星星之间的间距不好调整,不可以小数制的评分等，为了应对需求，开发出一个可自定义性较强的评分组件。
 #### 功能特性

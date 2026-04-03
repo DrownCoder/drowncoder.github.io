@@ -1,8 +1,10 @@
 ---
 title: "【重拾View(一)】——setContentView()源码解析"
-date: 2016-02-29 08:00:00 +0800
+date: 2018-09-01 18:24:42+08:00
 categories: ["Android源码分析"]
 source_name: "【重拾View(一)】——setContentView()源码解析"
+jianshu_views: 1682
+jianshu_url: "https://www.jianshu.com/p/9e1cf127f0ae"
 ---
 >1.[【重拾View(一)】——setContentView()源码解析](https://www.jianshu.com/p/9e1cf127f0ae)
 >2.[【重拾View(二)】——LayoutInflater源码解析](https://www.jianshu.com/p/86696bda40f3)

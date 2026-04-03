@@ -1,8 +1,10 @@
 ---
 title: "ImageView设置background和src的区别"
-date: 2016-01-06 08:00:00 +0800
+date: 2017-09-26 00:27:38+08:00
 categories: ["Android基础"]
 source_name: "ImageView设置background和src的区别"
+jianshu_views: 9170
+jianshu_url: "https://www.jianshu.com/p/3851e4d34fff"
 ---
 今天开发的时候遇到一个小问题，在给一个ImageView更换图片的时候，我使用的是java的方式更换，使用的方法是setBackgroundResource（）,但奇怪的是总是没有效果。
 最后查明原因是：我在编写xml文件的时候，为了查看效果，给这个ImageView设置了src，这时候再设置background的时候回发生重叠。

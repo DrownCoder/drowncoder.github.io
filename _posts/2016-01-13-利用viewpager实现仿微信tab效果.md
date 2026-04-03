@@ -1,8 +1,10 @@
 ---
 title: "利用ViewPager实现仿微信Tab效果"
-date: 2016-01-13 08:00:00 +0800
+date: 2017-09-26 00:28:18+08:00
 categories: ["Android基础"]
 source_name: "利用ViewPager实现仿微信Tab效果"
+jianshu_views: 381
+jianshu_url: "https://www.jianshu.com/p/9392a773bd11"
 ---
 学习了利用ViewPaper实现仿微信Tab界面的效果，写一篇博客总结一下，就当做笔记了~
 

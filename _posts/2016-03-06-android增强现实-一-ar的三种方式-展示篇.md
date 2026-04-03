@@ -1,8 +1,10 @@
 ---
 title: "Android增强现实（一）-AR的三种方式(展示篇)"
-date: 2016-03-06 08:00:00 +0800
+date: 2017-12-27 21:20:02+08:00
 categories: ["Android自定义View"]
 source_name: "Android增强现实（一）-AR的三种方式(展示篇)"
+jianshu_views: 14058
+jianshu_url: "https://www.jianshu.com/p/e6a51f4439df"
 ---
 >有一段时间没写博客了，事情比较多，博客进度有点跟不上了
 

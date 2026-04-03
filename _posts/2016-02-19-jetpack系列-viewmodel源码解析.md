@@ -1,8 +1,10 @@
 ---
 title: "【JetPack系列】——ViewModel源码解析"
-date: 2016-02-19 08:00:00 +0800
+date: 2020-09-14 00:03:43+08:00
 categories: ["Android源码分析"]
 source_name: "【JetPack系列】——ViewModel源码解析"
+jianshu_views: 1979
+jianshu_url: "https://www.jianshu.com/p/1715d7826191"
 ---
 >本系列博客基于androidx-2.2.0版本
 [【JetPack系列】——Lifecycle源码分析](https://www.jianshu.com/p/175a2138f5e2)

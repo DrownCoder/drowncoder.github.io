@@ -1,8 +1,10 @@
 ---
 title: "自定义评分条（实现方式二）-CustomAnimRatingBar"
-date: 2016-03-18 08:00:00 +0800
+date: 2017-09-26 00:30:07+08:00
 categories: ["Android自定义View"]
 source_name: "自定义评分条（实现方式二）-CustomAnimRatingBar"
+jianshu_views: 573
+jianshu_url: "https://www.jianshu.com/p/b24ea83e9798"
 ---
 接着上一篇博客[http://blog.csdn.net/sdfdzx/article/details/75447981](http://blog.csdn.net/sdfdzx/article/details/75447981 "CustomRatingBar"),由于需求变动，需要星星在滑动的时候能够有动画效果，由于CustomRatingBar是基于自定义View，实现onDraw绘制而成，实现动画效果比较困难，所以只能考虑从用另一个方式实现这个组件，这篇博文就是用ViewGroup实现自定义评分条并且实现动画效果。
 

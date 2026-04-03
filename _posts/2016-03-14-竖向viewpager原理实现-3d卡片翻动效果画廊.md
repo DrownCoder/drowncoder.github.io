@@ -1,8 +1,10 @@
 ---
 title: "竖向Viewpager原理实现（3D卡片翻动效果画廊）"
-date: 2016-03-14 08:00:00 +0800
+date: 2017-09-26 00:29:50+08:00
 categories: ["Android自定义View"]
 source_name: "竖向Viewpager原理实现（3D卡片翻动效果画廊）"
+jianshu_views: 2590
+jianshu_url: "https://www.jianshu.com/p/ee8a37ea736d"
 ---
 ![效果](http://upload-images.jianshu.io/upload_images/7866586-0c1cab5626ed883b?imageMogr2/auto-orient/strip)
 ### 效果：

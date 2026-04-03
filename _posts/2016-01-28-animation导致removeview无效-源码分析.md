@@ -1,8 +1,10 @@
 ---
 title: "Animation导致removeView无效（源码分析）"
-date: 2016-01-28 08:00:00 +0800
+date: 2017-09-26 00:30:43+08:00
 categories: ["Android源码分析"]
 source_name: "Animation导致removeView无效（源码分析）"
+jianshu_views: 1897
+jianshu_url: "https://www.jianshu.com/p/46bbd538e4e2"
 ---
 继续入自定义View的坑，最近实现一个效果的时候，需要动态添加和删除View，所以就要用到ViewGroup中的removeView和addView，按理来说应该很简单，但是我遇到了一个问题，发现removeView无效。  
 **最后发现：当你要remove的View正在执行Animation效果的时候，是无法remove掉的，所以需要先clearAnimation，再remove**

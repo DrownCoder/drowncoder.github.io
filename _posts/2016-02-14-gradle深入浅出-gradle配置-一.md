@@ -1,8 +1,10 @@
 ---
 title: "系列目录"
-date: 2016-02-14 08:00:00 +0800
+date: 2021-03-02 00:23:14+08:00
 categories: ["Android源码分析"]
 source_name: "【Gradle深入浅出】——Gradle配置（一）"
+jianshu_views: 10684
+jianshu_url: "https://www.jianshu.com/p/eacd7625cc29"
 ---
 [1.【Gradle深入浅出】——初识Gradle](https://www.jianshu.com/p/8e1ddd19083a)
 [2.【Gradle深入浅出】——Gradle基础概念](https://www.jianshu.com/p/4bcdf07d4579)

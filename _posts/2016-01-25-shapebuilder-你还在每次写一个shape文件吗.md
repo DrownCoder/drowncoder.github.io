@@ -1,8 +1,10 @@
 ---
 title: "ShapeBuilder-你还在每次写一个Shape文件吗？"
-date: 2016-01-25 08:00:00 +0800
+date: 2018-01-29 21:39:02+08:00
 categories: ["Android开源项目"]
 source_name: "ShapeBuilder-你还在每次写一个Shape文件吗？"
+jianshu_views: 2007
+jianshu_url: "https://www.jianshu.com/p/040290e4b448"
 ---
 不知道大家有没有过这样的烦恼，打开Drawable文件夹下到处都是各式各样的shape定义，其中不乏有一模一样的样式，但只是名字不同，或者仅仅只是radius，color不同，但每次一有边框，圆角，点击效果等都需要定义一个新的shape，今天这个页面圆角要2dp，明天一样的又要4dp，或是颜色的变化都需要我们重新写一个shape.xml,至少我每次写的时候都有点受不了，为了避免每次这样做重复的定义，这里为大家分享一个我用java代码来控制shape的生成，动态改变shape的样式。
 ![效果](http://upload-images.jianshu.io/upload_images/7866586-d449de5373a38c55.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)

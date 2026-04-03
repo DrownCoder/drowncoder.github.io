@@ -1,8 +1,10 @@
 ---
 title: "Android增强现实（二）-支持拖拽控制进度和伸缩的VrGifView"
-date: 2016-03-08 08:00:00 +0800
+date: 2018-01-02 21:26:14+08:00
 categories: ["Android自定义View"]
 source_name: "Android增强现实（二）-支持拖拽控制进度和伸缩的VrGifView"
+jianshu_views: 6553
+jianshu_url: "https://www.jianshu.com/p/abd1772cb061"
 ---
 >1.[Android增强现实（一）-AR的三种方式(展示篇)](https://www.jianshu.com/p/e6a51f4439df)
 >2.[Android增强现实（二）-支持拖拽控制进度和伸缩的VrGifView](https://www.jianshu.com/p/abd1772cb061)

@@ -1,8 +1,10 @@
 ---
 title: "android图片压缩质量参数Bitmap-Config-RGB_565-ARGB_8888"
-date: 2016-01-09 08:00:00 +0800
+date: 2017-09-26 00:27:20+08:00
 categories: ["Android基础"]
 source_name: "android图片压缩质量参数Bitmap-Config-RGB_565-ARGB_8888"
+jianshu_views: 2996
+jianshu_url: "https://www.jianshu.com/p/74120ee40ae1"
 ---
 android中的大图片一般都要经过压缩才显示，不然容易发生oom，一般我们压缩的时候都只关注其尺寸方面的大小，其实除了尺寸之外，影响一个图片占用空间的还有其色彩细节。
 

@@ -1,8 +1,10 @@
 ---
 title: "XVolley-基于Volley的封装的工具类"
-date: 2016-01-26 08:00:00 +0800
+date: 2017-09-25 20:19:52+08:00
 categories: ["Android开源项目"]
 source_name: "XVolley-基于Volley的封装的工具类"
+jianshu_views: 1248
+jianshu_url: "https://www.jianshu.com/p/a6a038dee1d1"
 ---
 >1.[Volley源码分析（一）](http://www.jianshu.com/p/b409f2bde354)
 >2.[Volley源码分析（二）](http://www.jianshu.com/p/80a73df1eb25)

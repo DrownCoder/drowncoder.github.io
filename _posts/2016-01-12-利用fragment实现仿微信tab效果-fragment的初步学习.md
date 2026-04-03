@@ -1,8 +1,10 @@
 ---
 title: "利用Fragment实现仿微信Tab效果（Fragment的初步学习）"
-date: 2016-01-12 08:00:00 +0800
+date: 2017-09-26 00:28:24+08:00
 categories: ["Android基础"]
 source_name: "利用Fragment实现仿微信Tab效果（Fragment的初步学习）"
+jianshu_views: 904
+jianshu_url: "https://www.jianshu.com/p/26c3c5769281"
 ---
   在前一次利用ViewPager实现仿微信Tab效果的后，又学习了利用Fragment实现该效果，刚好是对Fragment的一次学习理解。
 

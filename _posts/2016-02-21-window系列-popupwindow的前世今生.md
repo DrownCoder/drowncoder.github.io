@@ -1,8 +1,10 @@
 ---
 title: "【Window系列】——PopupWindow的前世今生"
-date: 2016-02-21 08:00:00 +0800
+date: 2019-06-15 14:36:34+08:00
 categories: ["Android源码分析"]
 source_name: "【Window系列】——PopupWindow的前世今生"
+jianshu_views: 2833
+jianshu_url: "https://www.jianshu.com/p/9dafea9cb3c0"
 ---
 >本系列博客基于android-28版本
 [【Window系列】——Toast源码解析](https://www.jianshu.com/p/f9e60e9272cf)

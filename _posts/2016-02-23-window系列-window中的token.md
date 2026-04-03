@@ -1,8 +1,10 @@
 ---
 title: "【Window系列】——Window中的Token"
-date: 2016-02-23 08:00:00 +0800
+date: 2020-04-19 18:20:38+08:00
 categories: ["Android源码分析"]
 source_name: "【Window系列】——Window中的Token"
+jianshu_views: 2372
+jianshu_url: "https://www.jianshu.com/p/3411ee4cb739"
 ---
 >本系列博客基于android-28版本
 [【Window系列】——Toast源码解析](https://www.jianshu.com/p/f9e60e9272cf)
