@@ -7,6 +7,9 @@ layout: default
 {% assign all_pinned = site.posts | where: 'pin', 'true' %}
 {% assign all_normal = site.posts | where_exp: 'item', 'item.pin != true and item.hidden != true' %}
 {% assign category_groups = site.posts | group_by_exp: 'post', 'post.categories[0]' %}
+{% assign branch_count = category_groups | size %}
+{% assign left_count = branch_count | plus: 1 | divided_by: 2 %}
+{% assign right_count = branch_count | minus: left_count %}
 {% assign posts = '' | split: '' %}
 
 {% assign visible_start = paginator.page | minus: 1 | times: paginator.per_page %}
@@ -51,30 +54,54 @@ layout: default
     </div>
 
     <div class="mindmap-board">
-      <div class="mindmap-root">
-        <span>{{ site.title }}</span>
-      </div>
+      <div class="mindmap-graph">
+        <div class="mindmap-side left">
+          {% for group in category_groups limit: left_count %}
+            {% assign category_name = group.name | strip %}
+            {% if category_name != '' %}
+              <article class="mindmap-branch tone-{{ forloop.index0 | modulo: 5 }}">
+                <a class="mindmap-category" href="{{ '/categories/' | append: category_name | slugify | append: '/' | relative_url }}">
+                  {{ category_name }}
+                  <small>{{ group.items | size }} 篇</small>
+                </a>
 
-      <div class="mindmap-branches">
-        {% for group in category_groups %}
-          {% assign category_name = group.name | strip %}
-          {% if category_name != '' %}
-            <article class="mindmap-branch">
-              <a class="mindmap-category" href="{{ '/categories/' | append: category_name | slugify | append: '/' | relative_url }}">
-                {{ category_name }}
-                <small>{{ group.items | size }} 篇</small>
-              </a>
+                <ul class="mindmap-leaves">
+                  {% for post in group.items limit: 3 %}
+                    <li>
+                      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </article>
+            {% endif %}
+          {% endfor %}
+        </div>
 
-              <ul class="mindmap-leaves">
-                {% for post in group.items limit: 3 %}
-                  <li>
-                    <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-                  </li>
-                {% endfor %}
-              </ul>
-            </article>
-          {% endif %}
-        {% endfor %}
+        <div class="mindmap-root">
+          <span>{{ site.title }}</span>
+        </div>
+
+        <div class="mindmap-side right">
+          {% for group in category_groups offset: left_count %}
+            {% assign category_name = group.name | strip %}
+            {% if category_name != '' %}
+              <article class="mindmap-branch tone-{{ forloop.index0 | modulo: 5 }}">
+                <a class="mindmap-category" href="{{ '/categories/' | append: category_name | slugify | append: '/' | relative_url }}">
+                  {{ category_name }}
+                  <small>{{ group.items | size }} 篇</small>
+                </a>
+
+                <ul class="mindmap-leaves">
+                  {% for post in group.items limit: 3 %}
+                    <li>
+                      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </article>
+            {% endif %}
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
