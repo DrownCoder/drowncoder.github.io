@@ -28,13 +28,6 @@ toc: true
 
 paginate: 10
 
-analytics:
-  busuanzi:
-    id: enabled
-
-pageviews:
-  provider: busuanzi
-
 kramdown:
   footnote_backlink: "&#8617;&#xfe0e;"
   syntax_highlighter: rouge

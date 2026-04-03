@@ -69,16 +69,3 @@
   <script async src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="{{ site.data.origin[type].mathjax.js | relative_url }}"></script>
 {% endif %}
-
-{% if page.layout == 'post' %}
-  {% assign provider = site.pageviews.provider %}
-
-  {% if provider and provider != empty %}
-    {% case provider %}
-      {% when 'goatcounter', 'busuanzi' %}
-        {% if site.analytics[provider].id != empty and site.analytics[provider].id %}
-          {% include pageviews/{{ provider }}.html %}
-        {% endif %}
-    {% endcase %}
-  {% endif %}
-{% endif %}

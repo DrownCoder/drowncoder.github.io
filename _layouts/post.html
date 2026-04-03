@@ -76,14 +76,7 @@ script_includes:
           </em>
         </span>
 
-        <div>
-          <span>
-            <em id="pageviews" data-baseviews="{{ page.jianshu_views | default: 0 }}">{{ page.jianshu_views | default: 0 }}</em>
-            阅读量
-          </span>
-
-          {% include read-time.html content=content prompt=true lang=lang %}
-        </div>
+        <div>{% include read-time.html content=content prompt=true lang=lang %}</div>
       </div>
     </div>
   </header>
