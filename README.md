@@ -4,7 +4,7 @@
 
 ## 目录说明
 
-- `_articles/`：迁移后的文章
+- `content/`：唯一需要维护的文章目录
 - `_layouts/`：页面模板
 - `assets/css/style.css`：站点样式
 - `user-7866586-1775056047/`：解压后的原始文章备份
@@ -65,26 +65,18 @@ bundle exec jekyll serve
 - GitHub Actions 工作流位于 `.github/workflows/pages-deploy.yml`
 - 如果 GitHub Pages 未自动发布，请到仓库 `Settings -> Pages` 中确认 `Source` 使用 `GitHub Actions`
 
-## 新文章发布
+## 内容目录
 
-现在支持“只放 Markdown 就能发文”。
+现在博客内容统一收口到 `content/`。
 
-使用方式：
+你以后只需要维护这一个目录：
 
-1. 把新文章放到 `inbox/` 目录。
-2. 如果你想顺手分类，可以放到子目录里，比如 `inbox/Android/我的新文章.md`。
-3. 直接提交并推送到 GitHub。
+- 老文章：直接在 `content/` 里改
+- 新文章：也直接放到 `content/` 里
 
-自动处理规则：
+### 新文章怎么写
 
-- 不需要自己写文件名格式
-- 不需要自己写 front matter
-- 如果正文第一行是 `# 标题`，系统会自动把它当文章标题
-- 如果没有 `# 标题`，就用文件名当标题
-- 子目录会自动变成分类，例如 `inbox/读书/xxx.md` 会生成 `categories: [读书]`
-- GitHub Actions 构建时会自动把它转换成 `_posts` 里的正式文章
-
-推荐最简写法：
+最简单的方式就是直接新建一个 Markdown 文件：
 
 ```md
 # 我的新文章
@@ -92,10 +84,33 @@ bundle exec jekyll serve
 这里直接开始写正文。
 ```
 
-发布命令还是这 3 句：
+你不需要自己处理：
+
+- Jekyll 文件名
+- front matter
+- 发布时间
+
+GitHub Actions 构建时会自动把 `content/` 里的 Markdown 转成真正发布用的 `_posts/`。
+
+### 分类怎么控制
+
+- 直接放在 `content/` 根目录：默认分类是 `未分类`
+- 放到子目录：子目录名会自动变成分类
+
+例如：
+
+- `content/Android/Jetpack笔记.md` -> 分类 `Android`
+- `content/读书/Gradle/学习记录.md` -> 分类 `读书 / Gradle`
+
+### 老文章怎么编辑
+
+老文章已经在 `content/` 里，直接改对应的 Markdown 即可。  
+提交并推送后，线上会自动重新发布。
+
+### 发布命令
 
 ```bash
 git add .
-git commit -m "Add new post"
+git commit -m "Update posts"
 git push origin master
 ```

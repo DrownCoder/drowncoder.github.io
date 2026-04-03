@@ -12,31 +12,26 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent.parent
-INBOX_DIR = ROOT / "inbox"
+CONTENT_DIR = ROOT / "content"
 POSTS_DIR = ROOT / "_posts"
-AUTO_MARKER = "<!-- generated-from-inbox -->"
 
 
 @dataclass
 class SourcePost:
     source_path: Path
-    title: str
-    body: str
-    categories: list[str]
-    date_str: str
-    slug: str
     filename: str
+    content: str
 
 
 def ensure_dirs() -> None:
-    INBOX_DIR.mkdir(exist_ok=True)
+    CONTENT_DIR.mkdir(exist_ok=True)
     POSTS_DIR.mkdir(exist_ok=True)
 
 
 def iter_markdown_files() -> list[Path]:
     return sorted(
         path
-        for path in INBOX_DIR.rglob("*.md")
+        for path in CONTENT_DIR.rglob("*.md")
         if path.is_file() and not any(part.startswith(".") for part in path.parts)
     )
 
@@ -79,7 +74,7 @@ def slugify(text: str) -> str:
 
 
 def relative_categories(path: Path) -> list[str]:
-    rel_parent = path.relative_to(INBOX_DIR).parent
+    rel_parent = path.relative_to(CONTENT_DIR).parent
     if str(rel_parent) == ".":
         return ["未分类"]
     return [part for part in rel_parent.parts if part and not part.startswith(".")]
@@ -114,35 +109,73 @@ def normalize_git_date(value: str) -> str:
     return dt.astimezone().strftime("%Y-%m-%d %H:%M:%S %z")
 
 
+def split_front_matter(text: str) -> tuple[dict[str, str], str] | None:
+    if not text.startswith("---\n"):
+        return None
+
+    end = text.find("\n---\n", 4)
+    if end == -1:
+        return None
+
+    front_matter_text = text[4:end]
+    body = text[end + 5 :]
+    data: dict[str, str] = {}
+
+    for line in front_matter_text.splitlines():
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        data[key.strip()] = value.strip()
+
+    return data, body
+
+
 def yaml_quote(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
 def build_post(path: Path) -> SourcePost:
     raw = read_text(path)
+    if split_front_matter(raw):
+        filename = path.name if re.match(r"^\d{4}-\d{2}-\d{2}-.+\.md$", path.name) else ""
+
+        if not filename:
+            metadata = split_front_matter(raw)[0]
+            raw_date = metadata.get("date", "")
+            normalized_date = raw_date[:10] if re.match(r"^\d{4}-\d{2}-\d{2}", raw_date) else fallback_now()[:10]
+            slug = metadata.get("slug", "").strip('"') or slugify(path.stem)
+            filename = f"{normalized_date}-{slug}.md"
+
+        return SourcePost(path, filename, raw if raw.endswith("\n") else raw + "\n")
+
     fallback_title = path.stem
     title, body = split_title_and_body(raw, fallback_title)
     categories = relative_categories(path)
     commit_date = git_first_commit_date(path)
     date_str = normalize_git_date(commit_date) if commit_date else fallback_now()
     slug = slugify(path.stem)
-    date_prefix = date_str[:10]
-    digest = hashlib.sha1(str(path.relative_to(INBOX_DIR)).encode("utf-8")).hexdigest()[:8]
-    filename = f"{date_prefix}-{slug}-{digest}.md"
-    return SourcePost(path, title, body, categories, date_str, slug, filename)
+    filename = f"{date_str[:10]}-{slug}.md"
+    content = render_front_matter(title, date_str, categories, path, slug) + body.strip() + "\n"
+    return SourcePost(path, filename, content)
 
 
-def render_front_matter(post: SourcePost) -> str:
-    categories = ", ".join(yaml_quote(item) for item in post.categories)
+def render_front_matter(
+    title: str,
+    date_str: str,
+    categories: list[str],
+    source_path: Path,
+    slug: str,
+) -> str:
+    categories_text = ", ".join(yaml_quote(item) for item in categories)
     return "\n".join(
         [
             "---",
-            f"title: {yaml_quote(post.title)}",
-            f"date: {post.date_str}",
-            f"categories: [{categories}]",
-            f"source_name: {yaml_quote(post.source_path.stem)}",
-            f"slug: {yaml_quote(post.slug)}",
-            f"inbox_source: {yaml_quote(post.source_path.relative_to(ROOT).as_posix())}",
+            f"title: {yaml_quote(title)}",
+            f"date: {date_str}",
+            f"categories: [{categories_text}]",
+            f"source_name: {yaml_quote(source_path.stem)}",
+            f"slug: {yaml_quote(slug)}",
+            f"content_source: {yaml_quote(source_path.relative_to(ROOT).as_posix())}",
             "---",
             "",
         ]
@@ -150,28 +183,19 @@ def render_front_matter(post: SourcePost) -> str:
 
 
 def write_generated_posts(posts: list[SourcePost]) -> None:
-    generated_names = {post.filename for post in posts}
-
     for existing in POSTS_DIR.glob("*.md"):
-        try:
-            content = existing.read_text(encoding="utf-8")
-        except UnicodeDecodeError:
-            continue
-
-        if AUTO_MARKER in content and existing.name not in generated_names:
-            existing.unlink()
+        existing.unlink()
 
     for post in posts:
         output_path = POSTS_DIR / post.filename
-        content = render_front_matter(post) + AUTO_MARKER + "\n\n" + post.body.strip() + "\n"
-        output_path.write_text(content, encoding="utf-8")
+        output_path.write_text(post.content, encoding="utf-8")
 
 
 def main() -> None:
     ensure_dirs()
     posts = [build_post(path) for path in iter_markdown_files()]
     write_generated_posts(posts)
-    print(f"published {len(posts)} inbox markdown file(s)")
+    print(f"published {len(posts)} content markdown file(s)")
 
 
 if __name__ == "__main__":

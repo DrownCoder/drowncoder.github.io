@@ -41,8 +41,8 @@ jobs:
           ruby-version: 3.4
           bundler-cache: true
 
-      - name: Publish inbox posts
-        run: python3 scripts/publish_inbox.py
+      - name: Publish content posts
+        run: python3 scripts/publish_content.py
 
       - name: Build site
         run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}"
