@@ -1,30 +1,85 @@
-title: Xuan's Blog
-description: 记录 Android、技术学习与生活随笔
+remote_theme: cotes2020/jekyll-theme-chirpy
+
 lang: zh-CN
 timezone: Asia/Shanghai
-url: ""
+
+title: DrownCoder
+tagline: Android / 源码 / 读书 / 生活
+description: >-
+  记录 Android 开发、源码分析、读书笔记与生活随笔。
+
+url: "https://drowncoder.github.io"
 baseurl: ""
-markdown: kramdown
-highlighter: rouge
-permalink: /:collection/:path/
+
+github:
+  username: DrownCoder
+
+social:
+  name: DrownCoder
+  email: 2994734692@qq.com
+  links:
+    - https://github.com/DrownCoder
+
+theme_mode: dark
+
+toc: true
+
+paginate: 10
+
+kramdown:
+  footnote_backlink: "&#8617;&#xfe0e;"
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: highlight
+    span:
+      line_numbers: false
+    block:
+      line_numbers: true
+      start_line: 1
 
 collections:
-  articles:
+  tabs:
     output: true
-    permalink: /articles/:path/
+    sort_by: order
 
 defaults:
   - scope:
       path: ""
-      type: "articles"
+      type: posts
     values:
-      layout: article
+      layout: post
+      comments: false
+      toc: true
+      permalink: /posts/:title/
+  - scope:
+      path: ""
+      type: tabs
+    values:
+      layout: page
+      permalink: /:title/
 
-kramdown:
-  input: GFM
-  hard_wrap: false
+sass:
+  style: compressed
+
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  profile: false
+  blanklines: false
+  ignore:
+    envs: [development]
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-include-cache
+  - jekyll-archives
 
 exclude:
-  - user-7866586-1775056048.rar
+  - "*.gem"
+  - "*.gemspec"
+  - tools
+  - vendor
   - scripts
+  - user-7866586-1775056048.rar
   - README.local.md

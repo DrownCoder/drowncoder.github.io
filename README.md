@@ -37,4 +37,30 @@ baseurl: "/blog"
 
 ## 本地预览
 
-如果你的电脑安装了 Ruby 和 Bundler，可以自行补一个 `Gemfile` 后本地运行 Jekyll 预览；即使不本地预览，GitHub Pages 也可以直接构建这个站点。
+当前站点已切换为 `Chirpy`。这个主题在线上推荐通过 GitHub Actions 构建，本机如果使用较老的 Ruby / Jekyll 版本，可能无法完整预览最新主题效果。
+
+如果你的本机环境较新，仍然可以尝试：
+
+```bash
+cd /Users/xuan/Projects/Blogs
+bundle install --path vendor/bundle
+bundle exec jekyll serve
+```
+
+启动后访问：
+
+`http://127.0.0.1:4000/`
+
+如果仓库有权限或依赖版本提示，可以优先使用：
+
+```bash
+bundle config set path 'vendor/bundle'
+bundle install
+bundle exec jekyll serve
+```
+
+## Chirpy 说明
+
+- 站点已改为 `Chirpy` 风格，并把旧文章迁移到 `_posts/`
+- GitHub Actions 工作流位于 `.github/workflows/pages-deploy.yml`
+- 如果 GitHub Pages 未自动发布，请到仓库 `Settings -> Pages` 中确认 `Source` 使用 `GitHub Actions`
