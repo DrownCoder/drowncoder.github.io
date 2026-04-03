@@ -1,8 +1,10 @@
 ---
-title: "前言"
-date: 2016-01-23 08:00:00 +0800
+title: RichEditor——一款基于RecyclerView实现的富文本编辑器实现方案(支持图文、转义生成MarkDown、粗体、斜体、下划线、删除线、超链接、标题等)
+date: 2018-05-29 21:04:31+08:00
 categories: ["Android开源项目"]
 source_name: "RichEditor——一款基于RecyclerView实现的富文本编辑器实现方案(支持图文、转义生成MarkDown、粗体、斜体、下划线、"
+jianshu_views: 3515
+jianshu_url: "https://www.jianshu.com/p/6eba3734d5ce"
 ---
 对于富文本编辑器的实现，首先我们肯定会想到实现的编辑器需要支持的几个必要特性：
 >1.涉及**大量**文字，图片，文字样式的展示与编辑。

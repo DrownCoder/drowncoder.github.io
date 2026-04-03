@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 import re
+from difflib import SequenceMatcher
 from pathlib import Path
 from urllib.parse import urljoin
 
@@ -106,7 +107,46 @@ def sync() -> tuple[int, int]:
         source_name = front_matter_value(lines, "source_name") or path.stem
         title = front_matter_value(lines, "title") or source_name
 
-        item = lookup.get(normalize(source_name)) or lookup.get(normalize(title))
+        source_norm = normalize(source_name)
+        title_norm = normalize(title)
+
+        item = lookup.get(source_norm) or lookup.get(title_norm)
+
+        if not item:
+            url_match = re.search(r'https?://www\.jianshu\.com/p/[A-Za-z0-9]+', body)
+            if url_match:
+                candidate_url = url_match.group(0)
+                for current in items:
+                    if current["url"] == candidate_url:
+                        item = current
+                        break
+
+        if not item:
+            best = None
+            best_score = 0.0
+
+            for current in items:
+                current_norm = normalize(current["title"])
+                if not current_norm:
+                    continue
+
+                if source_norm and (source_norm in current_norm or current_norm in source_norm):
+                    score = 0.95
+                elif title_norm and (title_norm in current_norm or current_norm in title_norm):
+                    score = 0.92
+                else:
+                    score = max(
+                        SequenceMatcher(None, source_norm, current_norm).ratio(),
+                        SequenceMatcher(None, title_norm, current_norm).ratio(),
+                    )
+
+                if score > best_score:
+                    best_score = score
+                    best = current
+
+            if best and best_score >= 0.72:
+                item = best
+
         if not item:
             unmatched += 1
             continue
