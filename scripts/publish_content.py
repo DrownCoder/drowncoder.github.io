@@ -169,8 +169,7 @@ def build_post(path: Path) -> SourcePost:
             metadata = split_front_matter(raw)[0]
             raw_date = metadata.get("date", "")
             normalized_date = raw_date[:10] if re.match(r"^\d{4}-\d{2}-\d{2}", raw_date) else fallback_now()[:10]
-            slug = metadata.get("slug", "").strip('"') or slugify(path.stem)
-            filename = f"{normalized_date}-{slug}.md"
+            filename = f"{normalized_date}-{path.stem}.md"
 
         return SourcePost(path, filename, raw if raw.endswith("\n") else raw + "\n")
 

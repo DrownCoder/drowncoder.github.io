@@ -92,6 +92,11 @@ bundle exec jekyll serve
 
 GitHub Actions 构建时会自动把 `content/` 里的 Markdown 转成真正发布用的 `_posts/`。
 
+说明：
+
+- `content/` 里的文件名是给你日常编辑用的自然文件名，不带日期前缀
+- 真正发布时，脚本会根据文章里的 `date` 自动生成 `_posts/YYYY-MM-DD-标题.md`
+
 ### 分类怎么控制
 
 - 直接放在 `content/` 根目录：默认分类是 `未分类`
