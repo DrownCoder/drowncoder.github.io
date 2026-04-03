@@ -84,6 +84,7 @@ jekyll-archives:
 exclude:
   - "*.gem"
   - "*.gemspec"
+  - inbox
   - tools
   - vendor
   - scripts

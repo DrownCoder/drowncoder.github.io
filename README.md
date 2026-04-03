@@ -64,3 +64,38 @@ bundle exec jekyll serve
 - 站点已改为 `Chirpy` 风格，并把旧文章迁移到 `_posts/`
 - GitHub Actions 工作流位于 `.github/workflows/pages-deploy.yml`
 - 如果 GitHub Pages 未自动发布，请到仓库 `Settings -> Pages` 中确认 `Source` 使用 `GitHub Actions`
+
+## 新文章发布
+
+现在支持“只放 Markdown 就能发文”。
+
+使用方式：
+
+1. 把新文章放到 `inbox/` 目录。
+2. 如果你想顺手分类，可以放到子目录里，比如 `inbox/Android/我的新文章.md`。
+3. 直接提交并推送到 GitHub。
+
+自动处理规则：
+
+- 不需要自己写文件名格式
+- 不需要自己写 front matter
+- 如果正文第一行是 `# 标题`，系统会自动把它当文章标题
+- 如果没有 `# 标题`，就用文件名当标题
+- 子目录会自动变成分类，例如 `inbox/读书/xxx.md` 会生成 `categories: [读书]`
+- GitHub Actions 构建时会自动把它转换成 `_posts` 里的正式文章
+
+推荐最简写法：
+
+```md
+# 我的新文章
+
+这里直接开始写正文。
+```
+
+发布命令还是这 3 句：
+
+```bash
+git add .
+git commit -m "Add new post"
+git push origin master
+```
