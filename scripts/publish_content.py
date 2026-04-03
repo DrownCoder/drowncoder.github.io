@@ -130,13 +130,39 @@ def split_front_matter(text: str) -> tuple[dict[str, str], str] | None:
     return data, body
 
 
+def update_categories_line(raw: str, categories: list[str]) -> str:
+    categories_text = ", ".join(yaml_quote(item) for item in categories)
+    replacement = f"categories: [{categories_text}]"
+
+    if re.search(r"^categories:\s*\[.*?\]\s*$", raw, re.M):
+        return re.sub(r"^categories:\s*\[.*?\]\s*$", replacement, raw, count=1, flags=re.M)
+
+    if raw.startswith("---\n"):
+        end = raw.find("\n---\n", 4)
+        if end != -1:
+            front_matter = raw[4:end]
+            body = raw[end + 5 :]
+            if front_matter and not front_matter.endswith("\n"):
+                front_matter += "\n"
+            front_matter += replacement + "\n"
+            return "---\n" + front_matter + "---\n" + body
+
+    return raw
+
+
 def yaml_quote(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
 def build_post(path: Path) -> SourcePost:
     raw = read_text(path)
-    if split_front_matter(raw):
+    folder_categories = relative_categories(path)
+    parsed = split_front_matter(raw)
+
+    if parsed:
+        if folder_categories != ["未分类"]:
+            raw = update_categories_line(raw, folder_categories)
+
         filename = path.name if re.match(r"^\d{4}-\d{2}-\d{2}-.+\.md$", path.name) else ""
 
         if not filename:
@@ -150,12 +176,11 @@ def build_post(path: Path) -> SourcePost:
 
     fallback_title = path.stem
     title, body = split_title_and_body(raw, fallback_title)
-    categories = relative_categories(path)
     commit_date = git_first_commit_date(path)
     date_str = normalize_git_date(commit_date) if commit_date else fallback_now()
     slug = slugify(path.stem)
     filename = f"{date_str[:10]}-{slug}.md"
-    content = render_front_matter(title, date_str, categories, path, slug) + body.strip() + "\n"
+    content = render_front_matter(title, date_str, folder_categories, path, slug) + body.strip() + "\n"
     return SourcePost(path, filename, content)
 
 
