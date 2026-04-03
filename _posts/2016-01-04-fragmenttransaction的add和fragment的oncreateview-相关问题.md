@@ -1,5 +1,5 @@
 ---
-title: FragmentTransaction的add和Fragment的onCreateView()相关问题
+title: "FragmentTransaction的add和Fragment的onCreateView()相关问题"
 date: 2017-09-26 00:28:33+08:00
 categories: ["Android基础"]
 source_name: "FragmentTransaction的add和Fragment的onCreateView()相关问题"

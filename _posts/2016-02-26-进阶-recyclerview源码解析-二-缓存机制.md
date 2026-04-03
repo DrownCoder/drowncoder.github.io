@@ -1,5 +1,5 @@
 ---
-title: 【进阶】RecyclerView源码解析(二)——缓存机制
+title: "【进阶】RecyclerView源码解析(二)——缓存机制"
 date: 2018-04-02 21:00:48+08:00
 categories: ["Android源码分析"]
 source_name: "【进阶】RecyclerView源码解析(二)——缓存机制"

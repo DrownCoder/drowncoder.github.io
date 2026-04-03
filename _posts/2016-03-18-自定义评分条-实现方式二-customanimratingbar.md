@@ -1,5 +1,5 @@
 ---
-title: 自定义评分条（实现方式二）-CustomAnimRatingBar
+title: "自定义评分条（实现方式二）-CustomAnimRatingBar"
 date: 2017-09-26 00:30:07+08:00
 categories: ["Android自定义View"]
 source_name: "自定义评分条（实现方式二）-CustomAnimRatingBar"

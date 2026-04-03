@@ -1,5 +1,5 @@
 ---
-title: 【Gradle深入浅出】——Gradle基础概念
+title: "【Gradle深入浅出】——Gradle基础概念"
 date: 2020-11-29 23:34:31+08:00
 categories: ["Android源码分析"]
 source_name: "【Gradle深入浅出】——Gradle基础概念"

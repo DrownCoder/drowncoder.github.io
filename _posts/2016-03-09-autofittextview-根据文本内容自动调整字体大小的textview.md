@@ -1,5 +1,5 @@
 ---
-title: AutoFitTextView-根据文本内容自动调整字体大小的TextView
+title: "AutoFitTextView-根据文本内容自动调整字体大小的TextView"
 date: 2017-09-26 00:28:51+08:00
 categories: ["Android自定义View"]
 source_name: "AutoFitTextView-根据文本内容自动调整字体大小的TextView"

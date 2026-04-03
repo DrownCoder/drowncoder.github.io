@@ -1,5 +1,5 @@
 ---
-title: Android增强现实（一）-AR的三种方式(展示篇)
+title: "Android增强现实（一）-AR的三种方式(展示篇)"
 date: 2017-12-27 21:20:02+08:00
 categories: ["Android自定义View"]
 source_name: "Android增强现实（一）-AR的三种方式(展示篇)"

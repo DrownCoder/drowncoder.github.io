@@ -1,5 +1,5 @@
 ---
-title: 【进阶】RecyclerView源码解析(三)——深度解析缓存机制
+title: "【进阶】RecyclerView源码解析(三)——深度解析缓存机制"
 date: 2018-04-17 21:12:20+08:00
 categories: ["Android源码分析"]
 source_name: "【进阶】RecyclerView源码解析(三)——深度解析缓存机制"

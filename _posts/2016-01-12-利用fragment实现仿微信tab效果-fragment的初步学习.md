@@ -1,5 +1,5 @@
 ---
-title: 利用Fragment实现仿微信Tab效果（Fragment的初步学习）
+title: "利用Fragment实现仿微信Tab效果（Fragment的初步学习）"
 date: 2017-09-26 00:28:24+08:00
 categories: ["Android基础"]
 source_name: "利用Fragment实现仿微信Tab效果（Fragment的初步学习）"

@@ -1,5 +1,5 @@
 ---
-title: "《Android开发艺术探索》读书笔记-第二章 IPC机制（未啃透）"
+title: "《Android开发艺术探索》读书笔记-第二章-IPC机制（未啃透）"
 date: 2017-09-26 00:26:01+08:00
 categories: ["读书笔记"]
 source_name: "《Android开发艺术探索》读书笔记-第二章-IPC机制（未啃透）"

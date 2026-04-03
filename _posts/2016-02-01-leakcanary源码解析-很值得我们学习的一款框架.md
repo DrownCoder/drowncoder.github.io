@@ -1,5 +1,5 @@
 ---
-title: LeakCanary源码解析-很值得我们学习的一款框架
+title: "LeakCanary源码解析-很值得我们学习的一款框架"
 date: 2018-08-17 00:11:51+08:00
 categories: ["Android源码分析"]
 source_name: "LeakCanary源码解析-很值得我们学习的一款框架"

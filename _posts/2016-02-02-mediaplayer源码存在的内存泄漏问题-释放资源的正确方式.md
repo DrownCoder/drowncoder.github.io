@@ -1,5 +1,5 @@
 ---
-title: MediaPlayer源码存在的内存泄漏问题，释放资源的正确方式
+title: "MediaPlayer源码存在的内存泄漏问题，释放资源的正确方式"
 date: 2017-09-26 00:30:36+08:00
 categories: ["Android源码分析"]
 source_name: "MediaPlayer源码存在的内存泄漏问题，释放资源的正确方式"

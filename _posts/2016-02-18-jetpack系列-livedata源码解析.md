@@ -1,5 +1,5 @@
 ---
-title: 【JetPack系列】——LiveData源码解析
+title: "【JetPack系列】——LiveData源码解析"
 date: 2020-08-02 19:29:54+08:00
 categories: ["Android源码分析"]
 source_name: "【JetPack系列】——LiveData源码解析"

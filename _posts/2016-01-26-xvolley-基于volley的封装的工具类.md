@@ -1,5 +1,5 @@
 ---
-title: XVolley-基于Volley的封装的工具类
+title: "XVolley-基于Volley的封装的工具类"
 date: 2017-09-25 20:19:52+08:00
 categories: ["Android开源项目"]
 source_name: "XVolley-基于Volley的封装的工具类"

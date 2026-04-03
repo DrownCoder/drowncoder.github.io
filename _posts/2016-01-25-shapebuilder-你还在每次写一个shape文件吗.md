@@ -1,5 +1,5 @@
 ---
-title: ShapeBuilder-你还在每次写一个Shape文件吗？
+title: "ShapeBuilder-你还在每次写一个Shape文件吗？"
 date: 2018-01-29 21:39:02+08:00
 categories: ["Android开源项目"]
 source_name: "ShapeBuilder-你还在每次写一个Shape文件吗？"

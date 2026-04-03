@@ -1,5 +1,5 @@
 ---
-title: 【重拾View(一)】——setContentView()源码解析
+title: "【重拾View(一)】——setContentView()源码解析"
 date: 2018-09-01 18:24:42+08:00
 categories: ["Android源码分析"]
 source_name: "【重拾View(一)】——setContentView()源码解析"

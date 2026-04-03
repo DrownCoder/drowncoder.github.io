@@ -1,5 +1,5 @@
 ---
-title: 【进阶】RecyclerView源码解析(一)——绘制流程
+title: "【进阶】RecyclerView源码解析(一)——绘制流程"
 date: 2018-03-13 21:27:36+08:00
 categories: ["Android源码分析"]
 source_name: "【进阶】RecyclerView源码解析(一)——绘制流程"

@@ -1,5 +1,5 @@
 ---
-title: 【重拾View(三)】——LayoutInflater中Factory源码解析
+title: "【重拾View(三)】——LayoutInflater中Factory源码解析"
 date: 2018-11-04 15:24:24+08:00
 categories: ["Android源码分析"]
 source_name: "【重拾View(三)】——LayoutInflater中Factory源码解析"

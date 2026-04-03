@@ -1,5 +1,5 @@
 ---
-title: EMvp-基于AOP的一种RecyclerView多楼层开发模式，支持组件化，全局楼层打通，MVP等高拓展性功能
+title: "EMvp-基于AOP的一种RecyclerView多楼层开发模式，支持组件化，全局楼层打通，MVP等高拓展性功能"
 date: 2018-11-14 21:14:52+08:00
 categories: ["Android开源项目"]
 source_name: "EMvp-基于AOP的一种RecyclerView多楼层开发模式，支持组件化，全局楼层打通，MVP等高拓展性功能"

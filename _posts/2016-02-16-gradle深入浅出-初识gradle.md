@@ -1,5 +1,5 @@
 ---
-title: 【Gradle深入浅出】——初识Gradle
+title: "【Gradle深入浅出】——初识Gradle"
 date: 2020-10-25 23:45:49+08:00
 categories: ["Android源码分析"]
 source_name: "【Gradle深入浅出】——初识Gradle"

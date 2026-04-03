@@ -1,5 +1,5 @@
 ---
-title: Animation导致removeView无效（源码分析）
+title: "Animation导致removeView无效（源码分析）"
 date: 2017-09-26 00:30:43+08:00
 categories: ["Android源码分析"]
 source_name: "Animation导致removeView无效（源码分析）"

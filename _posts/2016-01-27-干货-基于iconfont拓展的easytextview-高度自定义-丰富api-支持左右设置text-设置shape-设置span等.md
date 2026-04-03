@@ -1,5 +1,5 @@
 ---
-title: 【干货】基于iconfont拓展的EasyTextView(高度自定义，丰富Api，支持左右设置Text,设置Shape,设置span等)
+title: "【干货】基于iconfont拓展的EasyTextView(高度自定义，丰富Api，支持左右设置Text,设置Shape,设置span等)"
 date: 2018-05-02 21:14:44+08:00
 categories: ["Android开源项目"]
 source_name: "【干货】基于iconfont拓展的EasyTextView(高度自定义，丰富Api，支持左右设置Text,设置Shape,设置span等)"

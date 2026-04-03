@@ -1,5 +1,5 @@
 ---
-title: "《HeadFrist 设计模式》读书笔记 —— 策略模式"
+title: "《HeadFrist-设计模式》读书笔记-——-策略模式"
 date: 2017-09-26 00:26:34+08:00
 categories: ["读书笔记"]
 source_name: "《HeadFrist-设计模式》读书笔记-——-策略模式"

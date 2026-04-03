@@ -1,5 +1,5 @@
 ---
-title: 【JetPack系列】——ViewModel源码解析
+title: "【JetPack系列】——ViewModel源码解析"
 date: 2020-09-14 00:03:43+08:00
 categories: ["Android源码分析"]
 source_name: "【JetPack系列】——ViewModel源码解析"

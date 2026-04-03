@@ -1,5 +1,5 @@
 ---
-title: 【JetPack系列】——Lifecycle源码分析
+title: "【JetPack系列】——Lifecycle源码分析"
 date: 2020-06-14 22:18:37+08:00
 categories: ["Android源码分析"]
 source_name: "【JetPack系列】——Lifecycle源码分析"

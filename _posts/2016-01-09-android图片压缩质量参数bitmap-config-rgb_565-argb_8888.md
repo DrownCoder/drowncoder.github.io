@@ -1,5 +1,5 @@
 ---
-title: "android图片压缩质量参数Bitmap.Config RGB_565 ARGB_8888"
+title: "android图片压缩质量参数Bitmap-Config-RGB_565-ARGB_8888"
 date: 2017-09-26 00:27:20+08:00
 categories: ["Android基础"]
 source_name: "android图片压缩质量参数Bitmap-Config-RGB_565-ARGB_8888"

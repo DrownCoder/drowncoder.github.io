@@ -1,5 +1,5 @@
 ---
-title: ImageView设置background和src的区别
+title: "ImageView设置background和src的区别"
 date: 2017-09-26 00:27:38+08:00
 categories: ["Android基础"]
 source_name: "ImageView设置background和src的区别"

@@ -1,5 +1,5 @@
 ---
-title: 【进阶】RecyclerView源码解析(四)——RecyclerView进阶优化使用
+title: "【进阶】RecyclerView源码解析(四)——RecyclerView进阶优化使用"
 date: 2018-04-24 21:33:19+08:00
 categories: ["Android源码分析"]
 source_name: "【进阶】RecyclerView源码解析(四)——RecyclerView进阶优化使用"

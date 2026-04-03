@@ -1,5 +1,5 @@
 ---
-title: 【Gradle深入浅出】——Gralde配置（二）
+title: "【Gradle深入浅出】——Gralde配置（二）"
 date: 2021-06-23 23:53:20+08:00
 categories: ["Android源码分析"]
 source_name: "【Gradle深入浅出】——Gralde配置（二）"

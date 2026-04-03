@@ -1,5 +1,5 @@
 ---
-title: "Android Studio 导入项目太慢解决方式"
+title: "Android-Studio-导入项目太慢解决方式"
 date: 2017-09-26 00:28:06+08:00
 categories: ["Android基础"]
 source_name: "Android-Studio-导入项目太慢解决方式"

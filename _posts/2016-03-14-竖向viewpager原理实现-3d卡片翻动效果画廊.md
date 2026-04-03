@@ -1,5 +1,5 @@
 ---
-title: 竖向Viewpager原理实现（3D卡片翻动效果画廊）
+title: "竖向Viewpager原理实现（3D卡片翻动效果画廊）"
 date: 2017-09-26 00:29:50+08:00
 categories: ["Android自定义View"]
 source_name: "竖向Viewpager原理实现（3D卡片翻动效果画廊）"

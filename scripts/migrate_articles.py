@@ -63,8 +63,8 @@ def main() -> None:
         category = relative.parts[0] if len(relative.parts) > 1 else "未分类"
         source_name = src.stem
         body = src.read_text(encoding="utf-8")
-        title = extract_title(body, source_name)
-        body = remove_leading_heading(body, title)
+        title = source_name
+        body = remove_leading_heading(body, extract_title(body, source_name))
         slug = slugify(source_name)
         post_date = start_date + timedelta(days=index - 1)
         target_file = TARGET / f"{post_date.isoformat()}-{slug}.md"
