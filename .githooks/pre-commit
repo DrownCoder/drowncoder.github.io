@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+
+cd "$ROOT_DIR"
+
+echo "[pre-commit] Publishing content posts..."
+python3 scripts/publish_content.py
+
+git add content _posts

@@ -124,3 +124,20 @@ git add .
 git commit -m "Update posts"
 git push origin master
 ```
+
+### 自动同步
+
+仓库已经支持在 `git commit` 前自动执行文章同步脚本。
+
+也就是说你平时只要改 `content/`，执行 `git commit` 时会自动：
+
+- 运行 `scripts/publish_content.py`
+- 更新 `_posts/`
+- 把同步结果一起加入本次提交
+
+如果你换了新机器，只需要在仓库目录执行一次：
+
+```bash
+git config core.hooksPath .githooks
+chmod +x .githooks/pre-commit
+```
